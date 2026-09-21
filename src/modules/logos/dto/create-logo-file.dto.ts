@@ -1,12 +1,13 @@
 import {
   IsBoolean,
   IsEnum,
-  IsInt,
   IsOptional,
   IsString,
   MaxLength,
-  Min,
 } from 'class-validator';
+
+import { Transform } from 'class-transformer';
+
 import { LogoFileType } from '../../../generated/prisma/enums.js';
 
 export class CreateLogoFileDto {
@@ -17,25 +18,22 @@ export class CreateLogoFileDto {
   @MaxLength(20)
   format!: string;
 
-  @IsString()
-  @MaxLength(255)
-  fileName!: string;
-
-  @IsString()
-  @MaxLength(1000)
-  storageKey!: string;
-
   @IsOptional()
-  @IsString()
-  @MaxLength(150)
-  mimeType?: string;
+  @Transform(({ value }) => {
+    if (value === undefined) {
+      return undefined;
+    }
 
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  fileSize?: number;
+    if (value === true || value === 'true') {
+      return true;
+    }
 
-  @IsOptional()
+    if (value === false || value === 'false') {
+      return false;
+    }
+
+    return value as unknown;
+  })
   @IsBoolean()
   isPrimary?: boolean;
 }

@@ -13,10 +13,16 @@ import { LogoQueryDto } from './dto/logo-query.dto.js';
 import { CreateLogoVersionDto } from './dto/create-logo-version.dto.js';
 import { CreateLogoFileDto } from './dto/create-logo-file.dto.js';
 import { Prisma } from '../../generated/prisma/client.js';
+import { StorageService } from '../storage/storage.service.js';
+
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class LogosService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storageService: StorageService,
+  ) {}
 
   async create(organizationId: string, dto: CreateLogoDto) {
     const name = dto.name.trim();
@@ -333,8 +339,14 @@ export class LogosService {
     logoId: string,
     versionId: string,
     dto: CreateLogoFileDto,
+    file: {
+      originalname: string;
+      mimetype: string;
+      size: number;
+      buffer: Buffer;
+    },
   ) {
-    await this.getLogoOrThrow(organizationId, logoId);
+    const logo = await this.getLogoOrThrow(organizationId, logoId);
 
     const version = await this.prisma.logoVersion.findFirst({
       where: {
@@ -350,35 +362,74 @@ export class LogosService {
       throw new NotFoundException('Versión del logo no encontrada');
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      if (dto.isPrimary === true) {
-        await tx.logoFile.updateMany({
-          where: {
-            logoVersionId: versionId,
-            type: dto.type,
-          },
+    const safeFileName = this.sanitizeFileName(file.originalname);
+
+    const storageKey = [
+      'organizations',
+      organizationId,
+      'logos',
+      logo.id,
+      'versions',
+      version.id,
+      `${randomUUID()}-${safeFileName}`,
+    ].join('/');
+
+    let uploaded = false;
+
+    try {
+      await this.storageService.upload(storageKey, file.buffer, file.mimetype);
+
+      uploaded = true;
+
+      const result = await this.prisma.$transaction(async (tx) => {
+        if (dto.isPrimary === true) {
+          await tx.logoFile.updateMany({
+            where: {
+              logoVersionId: versionId,
+              type: dto.type,
+            },
+
+            data: {
+              isPrimary: false,
+            },
+          });
+        }
+
+        const logoFile = await tx.logoFile.create({
           data: {
-            isPrimary: false,
+            logoVersionId: versionId,
+
+            type: dto.type,
+
+            format: dto.format.trim().toUpperCase(),
+
+            fileName: file.originalname,
+
+            storageKey,
+
+            mimeType: file.mimetype,
+
+            fileSize: BigInt(file.size),
+
+            isPrimary: dto.isPrimary ?? false,
           },
         });
-      }
 
-      const file = await tx.logoFile.create({
-        data: {
-          logoVersionId: versionId,
-          type: dto.type,
-          format: dto.format.trim().toUpperCase(),
-          fileName: dto.fileName.trim(),
-          storageKey: dto.storageKey.trim(),
-          mimeType: dto.mimeType?.trim(),
-          fileSize:
-            dto.fileSize !== undefined ? BigInt(dto.fileSize) : undefined,
-          isPrimary: dto.isPrimary ?? false,
-        },
+        return logoFile;
       });
 
-      return this.serializeFile(file);
-    });
+      return this.serializeFile(result);
+    } catch (error) {
+      if (uploaded) {
+        try {
+          await this.storageService.delete(storageKey);
+        } catch {
+          // Evitamos ocultar el error original.
+        }
+      }
+
+      throw error;
+    }
   }
 
   async findOrCreateForOrder(
@@ -545,5 +596,14 @@ export class LogosService {
       ...file,
       fileSize: file.fileSize !== null ? file.fileSize.toString() : null,
     };
+  }
+  private sanitizeFileName(fileName: string) {
+    return fileName
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9._-]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^\.+/, '')
+      .slice(0, 180);
   }
 }

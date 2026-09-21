@@ -7,6 +7,10 @@ import {
   Post,
   Query,
   UseGuards,
+  UploadedFile,
+  UseInterceptors,
+  MaxFileSizeValidator,
+  ParseFilePipe,
 } from '@nestjs/common';
 
 import { LogosService } from './logos.service.js';
@@ -27,6 +31,8 @@ import { CurrentUser } from '../../common/decorators/current-user.decorators.js'
 
 import type { JwtUser } from '../../common/interfaces/jwt-user.interface.js';
 import { UserRole } from '../../generated/prisma/enums.js';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('logos')
 @UseGuards(JwtAuthGuard, SubscriptionGuard, RolesGuard)
@@ -79,19 +85,44 @@ export class LogosController {
     return this.logosService.createVersion(user.organizationId, id, dto);
   }
 
+  @UseGuards(ThrottlerGuard)
   @Post(':id/versions/:versionId/files')
   @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  @UseInterceptors(FileInterceptor('file'))
   createFile(
     @CurrentUser() user: JwtUser,
-    @Param('id') id: string,
-    @Param('versionId') versionId: string,
-    @Body() dto: CreateLogoFileDto,
+
+    @Param('id')
+    id: string,
+
+    @Param('versionId')
+    versionId: string,
+
+    @Body()
+    dto: CreateLogoFileDto,
+
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 25 * 1024 * 1024,
+          }),
+        ],
+      }),
+    )
+    file: {
+      originalname: string;
+      mimetype: string;
+      size: number;
+      buffer: Buffer;
+    },
   ) {
     return this.logosService.createFile(
       user.organizationId,
       id,
       versionId,
       dto,
+      file,
     );
   }
 }
