@@ -1,0 +1,861 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum MachineStatus {
+  ACTIVE
+  MAINTENANCE
+  INACTIVE
+}
+
+enum MachineType {
+  EMBROIDERY
+  MULTIHEAD
+  SINGLEHEAD
+  OTHER
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum OrderStatus {
+  QUOTE
+  PENDING
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  DEBIT_CARD
+  CREDIT_CARD
+  OTHER
+}
+
+enum OrderItemStatus {
+  PENDING
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum ProductionJobStatus {
+  PENDING
+  IN_PROGRESS
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum LogoStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum LogoFileType {
+  IMAGE
+  EMBROIDERY
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  STATUS_CHANGE
+  PAYMENT
+  PRODUCTION
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum BillingInterval {
+  MONTHLY
+}
+
+// ============================================================
+// ORGANIZATION / SAAS
+// ============================================================
+
+model Organization {
+  id   String @id @default(uuid())
+  name String
+  slug String @unique
+
+  taxId   String?
+  email   String?
+  phone   String?
+  address String?
+  city    String?
+  country String  @default("CL")
+
+  active Boolean @default(true)
+
+  // Próximo número de pedido a utilizar.
+  // Se incrementa de forma atómica desde el servicio.
+  orderSequence Int @default(1000)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users     User[]
+  employees Employee[]
+  machines  Machine[]
+  customers Customer[]
+  garments  Garment[]
+  logos     Logo[]
+  orders    Order[]
+
+  auditLogs AuditLog[]
+
+  subscription Subscription?
+
+  billingEvents BillingEvent[]
+
+  @@map("organizations")
+}
+
+// ============================================================
+// USERS
+// ============================================================
+
+model User {
+  id             String @id @default(uuid())
+  organizationId String
+
+  // El email es globalmente único porque actualmente
+  // cada usuario pertenece a una sola organización.
+  email String @unique
+
+  passwordHash String
+
+  firstName String
+  lastName  String
+
+  role   UserRole @default(EMPLOYEE)
+  active Boolean  @default(true)
+
+  lastLoginAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  employee Employee?
+
+  auditLogs AuditLog[]
+
+  orderStatusChanges OrderStatusHistory[]
+
+  orderItemStatusChanges OrderItemStatusHistory[]
+
+  @@index([organizationId, active])
+  @@index([organizationId, role])
+  @@map("users")
+}
+
+// ============================================================
+// EMPLOYEES
+// ============================================================
+
+model Employee {
+  id             String @id @default(uuid())
+  organizationId String
+
+  // Un empleado puede estar vinculado a un usuario.
+  userId String? @unique
+
+  firstName String
+  lastName  String
+
+  phone String?
+  email String?
+
+  position String?
+
+  status EmployeeStatus @default(ACTIVE)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  productionJobs ProductionJob[]
+
+  auditLogs AuditLog[]
+
+  @@index([organizationId, status])
+  @@map("employees")
+}
+
+// ============================================================
+// MACHINES
+// ============================================================
+
+model Machine {
+  id             String @id @default(uuid())
+  organizationId String
+
+  name String
+  code String?
+
+  type   MachineType   @default(EMBROIDERY)
+  status MachineStatus @default(ACTIVE)
+
+  brand        String?
+  model        String?
+  serialNumber String?
+
+  needleCount Int?
+  headCount   Int?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  productionJobs ProductionJob[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId, status])
+  @@map("machines")
+}
+
+// ============================================================
+// CUSTOMERS
+// ============================================================
+
+model Customer {
+  id             String @id @default(uuid())
+  organizationId String
+
+  name String
+
+  email String?
+  phone String?
+
+  taxId       String?
+  companyName String?
+
+  address String?
+  city    String?
+
+  status CustomerStatus @default(ACTIVE)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  orders Order[]
+
+  logos Logo[]
+
+  @@index([organizationId, name])
+  @@index([organizationId, phone])
+  @@index([organizationId, taxId])
+  @@map("customers")
+}
+
+// ============================================================
+// GARMENTS / PRENDAS
+// ============================================================
+
+model Garment {
+  id             String @id @default(uuid())
+  organizationId String
+
+  name        String
+  description String?
+
+  active Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  orderItems OrderItem[]
+  
+  @@unique([organizationId, name])
+  @@index([organizationId, active])
+  @@map("garments")
+}
+
+// ============================================================
+// LOGOS
+// ============================================================
+
+model Logo {
+  id             String @id @default(uuid())
+  organizationId String
+
+  customerId String?
+
+  name        String
+  description String?
+
+  status LogoStatus @default(ACTIVE)
+
+  // Precio actual utilizado para nuevos pedidos.
+  // Los pedidos guardan su propio snapshot mediante
+  // OrderItemLogo.unitPrice.
+  currentPrice Decimal @default(0) @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  versions LogoVersion[]
+
+  orderItemLogos OrderItemLogo[]
+
+  priceHistory LogoPriceHistory[]
+
+  @@index([organizationId, name])
+  @@index([organizationId, customerId])
+  @@map("logos")
+}
+
+// ============================================================
+// HISTORIAL DE PRECIOS DEL LOGO
+// ============================================================
+
+model LogoPriceHistory {
+  id     String @id @default(uuid())
+  logoId String
+
+  price Decimal @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+
+  logo Logo @relation(fields: [logoId],references: [id], onDelete: Cascade)
+
+  @@index([logoId, createdAt])
+
+  @@map("logo_price_history")
+}
+
+// ============================================================
+// VERSIONES DEL LOGO
+// ============================================================
+
+model LogoVersion {
+  id     String @id @default(uuid())
+  logoId String
+
+  version Int
+
+  // Dimensiones del diseño.
+  widthMm  Decimal? @db.Decimal(10, 2)
+  heightMm Decimal? @db.Decimal(10, 2)
+
+  stitchCount Int?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  logo Logo @relation(fields: [logoId], references: [id], onDelete: Cascade)
+
+  files LogoFile[]
+
+  @@unique([logoId, version])
+  @@index([logoId])
+  @@map("logo_versions")
+}
+
+// ============================================================
+// ARCHIVOS DEL LOGO
+// ============================================================
+
+model LogoFile {
+  id            String @id @default(uuid())
+  logoVersionId String
+
+  type LogoFileType
+
+  // Ejemplos:
+  // DST
+  // PES
+  // JEF
+  // EXP
+  // PNG
+  // JPG
+  // WEBP
+  format String
+
+  fileName   String
+  storageKey String
+
+  mimeType String?
+  fileSize BigInt?
+
+  // Indica la imagen principal de esta versión.
+  isPrimary Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  logoVersion LogoVersion @relation(fields: [logoVersionId], references: [id], onDelete: Cascade)
+
+  @@index([logoVersionId, type])
+  @@map("logo_files")
+}
+
+// ============================================================
+// PEDIDOS
+// ============================================================
+
+model Order {
+  id             String @id @default(uuid())
+  organizationId String
+  customerId     String
+
+  orderNumber Int
+
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  // Fechas importantes.
+  orderedAt   DateTime  @default(now())
+  promisedAt  DateTime?
+  deliveredAt DateTime?
+
+  // Totales monetarios.
+  subtotal   Decimal @default(0) @db.Decimal(12, 2)
+  discount   Decimal @default(0) @db.Decimal(12, 2)
+  total      Decimal @default(0) @db.Decimal(12, 2)
+  paidAmount Decimal @default(0) @db.Decimal(12, 2)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Restrict)
+
+  items OrderItem[]
+
+  payments Payment[]
+
+  productionJobs ProductionJob[]
+
+  statusHistory OrderStatusHistory[]
+
+  @@unique([organizationId, orderNumber])
+  @@index([organizationId, status])
+  @@index([organizationId, paymentStatus])
+  @@index([organizationId, customerId])
+  @@index([organizationId, orderedAt])
+  @@map("orders")
+}
+
+// ============================================================
+// ITEMS DEL PEDIDO
+// ============================================================
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  garmentId String
+
+  description String?
+
+  quantity Int
+
+  // Snapshot del precio de la prenda al momento
+  // de agregarla al pedido.
+  unitPrice Decimal @db.Decimal(12, 2)
+
+  subtotal Decimal @db.Decimal(12, 2)
+
+  status OrderItemStatus @default(PENDING)
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  garment Garment @relation(fields: [garmentId], references: [id], onDelete: Restrict)
+
+  logos OrderItemLogo[]
+
+  productionJobs ProductionJob[]
+
+  statusHistory OrderItemStatusHistory[]
+
+  @@index([orderId])
+  @@index([garmentId])
+  @@index([status])
+  @@map("order_items")
+}
+
+// ============================================================
+// LOGOS UTILIZADOS EN UN ITEM
+// ============================================================
+
+model OrderItemLogo {
+  id          String @id @default(uuid())
+  orderItemId String
+  logoId      String
+
+  // Snapshot del nombre del logo al momento
+  // de crear el pedido.
+  logoName String
+
+  // Snapshot del precio cobrado.
+  unitPrice Decimal @db.Decimal(12, 2)
+
+  quantity Int @default(1)
+
+  // Ej:
+  // PECHO_IZQUIERDO
+  // ESPALDA
+  // MANGA
+  // PECHO_DERECHO
+  placement String?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  logo Logo @relation(fields: [logoId], references: [id], onDelete: Restrict)
+
+  productionJobs ProductionJob[]
+
+  @@index([orderItemId])
+  @@index([logoId])
+  @@map("order_item_logos")
+}
+
+// ============================================================
+// PAGOS DE CLIENTES-
+// ============================================================
+//
+// IMPORTANTE:
+// Payment representa pagos realizados por el cliente para
+// un pedido.
+// NO representa pagos de la suscripción SaaS.
+//
+
+model Payment {
+  id String @id @default(uuid())
+
+  orderId String
+
+  amount Decimal @db.Decimal(12, 2)
+
+  method PaymentMethod
+
+  paidAt DateTime @default(now())
+
+  reference String?
+  notes     String?
+
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId, paidAt])
+  @@map("payments")
+}
+
+// ============================================================
+// PRODUCCIÓN
+// ============================================================
+
+model ProductionJob {
+  id String @id @default(uuid())
+
+  orderId     String
+  orderItemId String
+
+  // Puede apuntar a un logo específico del item.
+  orderItemLogoId String?
+
+  machineId  String?
+  employeeId String?
+
+  status ProductionJobStatus @default(PENDING)
+
+  quantity Int
+
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  orderItemLogo OrderItemLogo? @relation(fields: [orderItemLogoId], references: [id], onDelete: SetNull)
+
+  machine Machine? @relation(fields: [machineId], references: [id], onDelete: SetNull)
+
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([orderItemId])
+  @@index([orderItemLogoId])
+  @@index([machineId, status])
+  @@index([employeeId, status])
+  @@index([status])
+  @@map("production_jobs")
+}
+
+// ============================================================
+// HISTORIAL DE ESTADOS DEL PEDIDO
+// ============================================================
+
+model OrderStatusHistory {
+  id String @id @default(uuid())
+
+  orderId String
+
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
+
+  changedByUserId String?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  changedBy User? @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([orderId, createdAt])
+  @@map("order_status_history")
+}
+
+// ============================================================
+// HISTORIAL DE ESTADOS DE ITEMS
+// ============================================================
+
+model OrderItemStatusHistory {
+  id String @id @default(uuid())
+
+  orderItemId String
+
+  fromStatus OrderItemStatus?
+  toStatus   OrderItemStatus
+
+  changedByUserId String?
+
+  notes String?
+
+  createdAt DateTime @default(now())
+
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  changedBy User? @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([orderItemId, createdAt])
+  @@map("order_item_status_history")
+}
+
+// ============================================================
+// AUDITORÍA
+// ============================================================
+
+model AuditLog {
+  id String @id @default(uuid())
+
+  organizationId String
+
+  userId     String?
+  employeeId String?
+
+  action AuditAction
+
+  entityType String
+  entityId   String
+
+  // Estado anterior y posterior.
+  beforeData Json?
+  afterData  Json?
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  employee Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([organizationId, entityType, entityId])
+  @@index([userId, createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================================
+// PLANES SaaS
+// ============================================================
+
+model Plan {
+  id String @id @default(uuid())
+
+  code String @unique
+
+  name        String
+  description String?
+
+  monthlyPrice Decimal @db.Decimal(12, 2)
+
+  trialDays Int @default(7)
+
+  interval BillingInterval @default(MONTHLY)
+
+  active Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+// ============================================================
+// SUSCRIPCIONES SaaS
+// ============================================================
+
+model Subscription {
+  id String @id @default(uuid())
+
+  // Una organización tiene una sola suscripción activa
+  // como máximo en este modelo.
+  organizationId String @unique
+
+  planId String
+
+  status SubscriptionStatus @default(TRIALING)
+
+  trialStartsAt DateTime?
+  trialEndsAt   DateTime?
+
+  currentPeriodStartsAt DateTime?
+  currentPeriodEndsAt   DateTime?
+
+  canceledAt DateTime?
+  endedAt    DateTime?
+
+  // Identificadores proporcionados posteriormente
+  // por el proveedor de pagos.
+  externalCustomerId     String?
+  externalSubscriptionId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Restrict)
+
+  @@index([status])
+  @@index([currentPeriodEndsAt])
+  @@index([externalCustomerId])
+  @@index([externalSubscriptionId])
+  @@map("subscriptions")
+}
+
+// ============================================================
+// EVENTOS DE FACTURACIÓN SaaS
+// ============================================================
+//
+// Se utilizará posteriormente para webhooks de Stripe,
+// Mercado Pago, Flow u otro proveedor.
+//
+// No se mezcla con Payment.
+//
+
+model BillingEvent {
+  id String @id @default(uuid())
+
+  organizationId String
+
+  provider  String
+  eventId   String
+  eventType String
+
+  payload Json?
+
+  processedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Evita procesar dos veces el mismo evento
+  // enviado por el proveedor.
+  @@unique([provider, eventId])
+  @@index([organizationId, createdAt])
+  @@map("billing_events")
+}
