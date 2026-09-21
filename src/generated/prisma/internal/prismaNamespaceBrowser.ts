@@ -58,6 +58,7 @@ export const ModelName = {
   Customer: 'Customer',
   Garment: 'Garment',
   Logo: 'Logo',
+  LogoPriceHistory: 'LogoPriceHistory',
   LogoVersion: 'LogoVersion',
   LogoFile: 'LogoFile',
   Order: 'Order',
@@ -208,6 +209,16 @@ export const LogoScalarFieldEnum = {
 } as const
 
 export type LogoScalarFieldEnum = (typeof LogoScalarFieldEnum)[keyof typeof LogoScalarFieldEnum]
+
+
+export const LogoPriceHistoryScalarFieldEnum = {
+  id: 'id',
+  logoId: 'logoId',
+  price: 'price',
+  createdAt: 'createdAt'
+} as const
+
+export type LogoPriceHistoryScalarFieldEnum = (typeof LogoPriceHistoryScalarFieldEnum)[keyof typeof LogoPriceHistoryScalarFieldEnum]
 
 
 export const LogoVersionScalarFieldEnum = {

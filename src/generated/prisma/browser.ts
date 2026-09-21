@@ -53,6 +53,11 @@ export type Garment = Prisma.GarmentModel
  */
 export type Logo = Prisma.LogoModel
 /**
+ * Model LogoPriceHistory
+ * 
+ */
+export type LogoPriceHistory = Prisma.LogoPriceHistoryModel
+/**
  * Model LogoVersion
  * 
  */

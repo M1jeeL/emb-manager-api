@@ -252,6 +252,7 @@ export type LogoWhereInput = {
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
   versions?: Prisma.LogoVersionListRelationFilter
   orderItemLogos?: Prisma.OrderItemLogoListRelationFilter
+  priceHistory?: Prisma.LogoPriceHistoryListRelationFilter
 }
 
 export type LogoOrderByWithRelationInput = {
@@ -268,6 +269,7 @@ export type LogoOrderByWithRelationInput = {
   customer?: Prisma.CustomerOrderByWithRelationInput
   versions?: Prisma.LogoVersionOrderByRelationAggregateInput
   orderItemLogos?: Prisma.OrderItemLogoOrderByRelationAggregateInput
+  priceHistory?: Prisma.LogoPriceHistoryOrderByRelationAggregateInput
 }
 
 export type LogoWhereUniqueInput = Prisma.AtLeast<{
@@ -287,6 +289,7 @@ export type LogoWhereUniqueInput = Prisma.AtLeast<{
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
   versions?: Prisma.LogoVersionListRelationFilter
   orderItemLogos?: Prisma.OrderItemLogoListRelationFilter
+  priceHistory?: Prisma.LogoPriceHistoryListRelationFilter
 }, "id">
 
 export type LogoOrderByWithAggregationInput = {
@@ -333,6 +336,7 @@ export type LogoCreateInput = {
   customer?: Prisma.CustomerCreateNestedOneWithoutLogosInput
   versions?: Prisma.LogoVersionCreateNestedManyWithoutLogoInput
   orderItemLogos?: Prisma.OrderItemLogoCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryCreateNestedManyWithoutLogoInput
 }
 
 export type LogoUncheckedCreateInput = {
@@ -347,6 +351,7 @@ export type LogoUncheckedCreateInput = {
   updatedAt?: Date | string
   versions?: Prisma.LogoVersionUncheckedCreateNestedManyWithoutLogoInput
   orderItemLogos?: Prisma.OrderItemLogoUncheckedCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedCreateNestedManyWithoutLogoInput
 }
 
 export type LogoUpdateInput = {
@@ -361,6 +366,7 @@ export type LogoUpdateInput = {
   customer?: Prisma.CustomerUpdateOneWithoutLogosNestedInput
   versions?: Prisma.LogoVersionUpdateManyWithoutLogoNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateInput = {
@@ -375,6 +381,7 @@ export type LogoUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.LogoVersionUncheckedUpdateManyWithoutLogoNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUncheckedUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoCreateManyInput = {
@@ -566,6 +573,20 @@ export type DecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
+export type LogoCreateNestedOneWithoutPriceHistoryInput = {
+  create?: Prisma.XOR<Prisma.LogoCreateWithoutPriceHistoryInput, Prisma.LogoUncheckedCreateWithoutPriceHistoryInput>
+  connectOrCreate?: Prisma.LogoCreateOrConnectWithoutPriceHistoryInput
+  connect?: Prisma.LogoWhereUniqueInput
+}
+
+export type LogoUpdateOneRequiredWithoutPriceHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.LogoCreateWithoutPriceHistoryInput, Prisma.LogoUncheckedCreateWithoutPriceHistoryInput>
+  connectOrCreate?: Prisma.LogoCreateOrConnectWithoutPriceHistoryInput
+  upsert?: Prisma.LogoUpsertWithoutPriceHistoryInput
+  connect?: Prisma.LogoWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.LogoUpdateToOneWithWhereWithoutPriceHistoryInput, Prisma.LogoUpdateWithoutPriceHistoryInput>, Prisma.LogoUncheckedUpdateWithoutPriceHistoryInput>
+}
+
 export type LogoCreateNestedOneWithoutVersionsInput = {
   create?: Prisma.XOR<Prisma.LogoCreateWithoutVersionsInput, Prisma.LogoUncheckedCreateWithoutVersionsInput>
   connectOrCreate?: Prisma.LogoCreateOrConnectWithoutVersionsInput
@@ -605,6 +626,7 @@ export type LogoCreateWithoutOrganizationInput = {
   customer?: Prisma.CustomerCreateNestedOneWithoutLogosInput
   versions?: Prisma.LogoVersionCreateNestedManyWithoutLogoInput
   orderItemLogos?: Prisma.OrderItemLogoCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryCreateNestedManyWithoutLogoInput
 }
 
 export type LogoUncheckedCreateWithoutOrganizationInput = {
@@ -618,6 +640,7 @@ export type LogoUncheckedCreateWithoutOrganizationInput = {
   updatedAt?: Date | string
   versions?: Prisma.LogoVersionUncheckedCreateNestedManyWithoutLogoInput
   orderItemLogos?: Prisma.OrderItemLogoUncheckedCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedCreateNestedManyWithoutLogoInput
 }
 
 export type LogoCreateOrConnectWithoutOrganizationInput = {
@@ -672,6 +695,7 @@ export type LogoCreateWithoutCustomerInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutLogosInput
   versions?: Prisma.LogoVersionCreateNestedManyWithoutLogoInput
   orderItemLogos?: Prisma.OrderItemLogoCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryCreateNestedManyWithoutLogoInput
 }
 
 export type LogoUncheckedCreateWithoutCustomerInput = {
@@ -685,6 +709,7 @@ export type LogoUncheckedCreateWithoutCustomerInput = {
   updatedAt?: Date | string
   versions?: Prisma.LogoVersionUncheckedCreateNestedManyWithoutLogoInput
   orderItemLogos?: Prisma.OrderItemLogoUncheckedCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedCreateNestedManyWithoutLogoInput
 }
 
 export type LogoCreateOrConnectWithoutCustomerInput = {
@@ -713,6 +738,78 @@ export type LogoUpdateManyWithWhereWithoutCustomerInput = {
   data: Prisma.XOR<Prisma.LogoUpdateManyMutationInput, Prisma.LogoUncheckedUpdateManyWithoutCustomerInput>
 }
 
+export type LogoCreateWithoutPriceHistoryInput = {
+  id?: string
+  name: string
+  description?: string | null
+  status?: $Enums.LogoStatus
+  currentPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutLogosInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutLogosInput
+  versions?: Prisma.LogoVersionCreateNestedManyWithoutLogoInput
+  orderItemLogos?: Prisma.OrderItemLogoCreateNestedManyWithoutLogoInput
+}
+
+export type LogoUncheckedCreateWithoutPriceHistoryInput = {
+  id?: string
+  organizationId: string
+  customerId?: string | null
+  name: string
+  description?: string | null
+  status?: $Enums.LogoStatus
+  currentPrice?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  versions?: Prisma.LogoVersionUncheckedCreateNestedManyWithoutLogoInput
+  orderItemLogos?: Prisma.OrderItemLogoUncheckedCreateNestedManyWithoutLogoInput
+}
+
+export type LogoCreateOrConnectWithoutPriceHistoryInput = {
+  where: Prisma.LogoWhereUniqueInput
+  create: Prisma.XOR<Prisma.LogoCreateWithoutPriceHistoryInput, Prisma.LogoUncheckedCreateWithoutPriceHistoryInput>
+}
+
+export type LogoUpsertWithoutPriceHistoryInput = {
+  update: Prisma.XOR<Prisma.LogoUpdateWithoutPriceHistoryInput, Prisma.LogoUncheckedUpdateWithoutPriceHistoryInput>
+  create: Prisma.XOR<Prisma.LogoCreateWithoutPriceHistoryInput, Prisma.LogoUncheckedCreateWithoutPriceHistoryInput>
+  where?: Prisma.LogoWhereInput
+}
+
+export type LogoUpdateToOneWithWhereWithoutPriceHistoryInput = {
+  where?: Prisma.LogoWhereInput
+  data: Prisma.XOR<Prisma.LogoUpdateWithoutPriceHistoryInput, Prisma.LogoUncheckedUpdateWithoutPriceHistoryInput>
+}
+
+export type LogoUpdateWithoutPriceHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumLogoStatusFieldUpdateOperationsInput | $Enums.LogoStatus
+  currentPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutLogosNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutLogosNestedInput
+  versions?: Prisma.LogoVersionUpdateManyWithoutLogoNestedInput
+  orderItemLogos?: Prisma.OrderItemLogoUpdateManyWithoutLogoNestedInput
+}
+
+export type LogoUncheckedUpdateWithoutPriceHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumLogoStatusFieldUpdateOperationsInput | $Enums.LogoStatus
+  currentPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  versions?: Prisma.LogoVersionUncheckedUpdateManyWithoutLogoNestedInput
+  orderItemLogos?: Prisma.OrderItemLogoUncheckedUpdateManyWithoutLogoNestedInput
+}
+
 export type LogoCreateWithoutVersionsInput = {
   id?: string
   name: string
@@ -724,6 +821,7 @@ export type LogoCreateWithoutVersionsInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutLogosInput
   customer?: Prisma.CustomerCreateNestedOneWithoutLogosInput
   orderItemLogos?: Prisma.OrderItemLogoCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryCreateNestedManyWithoutLogoInput
 }
 
 export type LogoUncheckedCreateWithoutVersionsInput = {
@@ -737,6 +835,7 @@ export type LogoUncheckedCreateWithoutVersionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   orderItemLogos?: Prisma.OrderItemLogoUncheckedCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedCreateNestedManyWithoutLogoInput
 }
 
 export type LogoCreateOrConnectWithoutVersionsInput = {
@@ -766,6 +865,7 @@ export type LogoUpdateWithoutVersionsInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLogosNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutLogosNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateWithoutVersionsInput = {
@@ -779,6 +879,7 @@ export type LogoUncheckedUpdateWithoutVersionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItemLogos?: Prisma.OrderItemLogoUncheckedUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoCreateWithoutOrderItemLogosInput = {
@@ -792,6 +893,7 @@ export type LogoCreateWithoutOrderItemLogosInput = {
   organization: Prisma.OrganizationCreateNestedOneWithoutLogosInput
   customer?: Prisma.CustomerCreateNestedOneWithoutLogosInput
   versions?: Prisma.LogoVersionCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryCreateNestedManyWithoutLogoInput
 }
 
 export type LogoUncheckedCreateWithoutOrderItemLogosInput = {
@@ -805,6 +907,7 @@ export type LogoUncheckedCreateWithoutOrderItemLogosInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.LogoVersionUncheckedCreateNestedManyWithoutLogoInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedCreateNestedManyWithoutLogoInput
 }
 
 export type LogoCreateOrConnectWithoutOrderItemLogosInput = {
@@ -834,6 +937,7 @@ export type LogoUpdateWithoutOrderItemLogosInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLogosNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutLogosNestedInput
   versions?: Prisma.LogoVersionUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateWithoutOrderItemLogosInput = {
@@ -847,6 +951,7 @@ export type LogoUncheckedUpdateWithoutOrderItemLogosInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.LogoVersionUncheckedUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoCreateManyOrganizationInput = {
@@ -871,6 +976,7 @@ export type LogoUpdateWithoutOrganizationInput = {
   customer?: Prisma.CustomerUpdateOneWithoutLogosNestedInput
   versions?: Prisma.LogoVersionUpdateManyWithoutLogoNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateWithoutOrganizationInput = {
@@ -884,6 +990,7 @@ export type LogoUncheckedUpdateWithoutOrganizationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.LogoVersionUncheckedUpdateManyWithoutLogoNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUncheckedUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateManyWithoutOrganizationInput = {
@@ -919,6 +1026,7 @@ export type LogoUpdateWithoutCustomerInput = {
   organization?: Prisma.OrganizationUpdateOneRequiredWithoutLogosNestedInput
   versions?: Prisma.LogoVersionUpdateManyWithoutLogoNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateWithoutCustomerInput = {
@@ -932,6 +1040,7 @@ export type LogoUncheckedUpdateWithoutCustomerInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.LogoVersionUncheckedUpdateManyWithoutLogoNestedInput
   orderItemLogos?: Prisma.OrderItemLogoUncheckedUpdateManyWithoutLogoNestedInput
+  priceHistory?: Prisma.LogoPriceHistoryUncheckedUpdateManyWithoutLogoNestedInput
 }
 
 export type LogoUncheckedUpdateManyWithoutCustomerInput = {
@@ -953,11 +1062,13 @@ export type LogoUncheckedUpdateManyWithoutCustomerInput = {
 export type LogoCountOutputType = {
   versions: number
   orderItemLogos: number
+  priceHistory: number
 }
 
 export type LogoCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   versions?: boolean | LogoCountOutputTypeCountVersionsArgs
   orderItemLogos?: boolean | LogoCountOutputTypeCountOrderItemLogosArgs
+  priceHistory?: boolean | LogoCountOutputTypeCountPriceHistoryArgs
 }
 
 /**
@@ -984,6 +1095,13 @@ export type LogoCountOutputTypeCountOrderItemLogosArgs<ExtArgs extends runtime.T
   where?: Prisma.OrderItemLogoWhereInput
 }
 
+/**
+ * LogoCountOutputType without action
+ */
+export type LogoCountOutputTypeCountPriceHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LogoPriceHistoryWhereInput
+}
+
 
 export type LogoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -999,6 +1117,7 @@ export type LogoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   customer?: boolean | Prisma.Logo$customerArgs<ExtArgs>
   versions?: boolean | Prisma.Logo$versionsArgs<ExtArgs>
   orderItemLogos?: boolean | Prisma.Logo$orderItemLogosArgs<ExtArgs>
+  priceHistory?: boolean | Prisma.Logo$priceHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.LogoCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["logo"]>
 
@@ -1048,6 +1167,7 @@ export type LogoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   customer?: boolean | Prisma.Logo$customerArgs<ExtArgs>
   versions?: boolean | Prisma.Logo$versionsArgs<ExtArgs>
   orderItemLogos?: boolean | Prisma.Logo$orderItemLogosArgs<ExtArgs>
+  priceHistory?: boolean | Prisma.Logo$priceHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.LogoCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type LogoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1066,6 +1186,7 @@ export type $LogoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     customer: Prisma.$CustomerPayload<ExtArgs> | null
     versions: Prisma.$LogoVersionPayload<ExtArgs>[]
     orderItemLogos: Prisma.$OrderItemLogoPayload<ExtArgs>[]
+    priceHistory: Prisma.$LogoPriceHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1475,6 +1596,7 @@ export interface Prisma__LogoClient<T, Null = never, ExtArgs extends runtime.Typ
   customer<T extends Prisma.Logo$customerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Logo$customerArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   versions<T extends Prisma.Logo$versionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Logo$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogoVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orderItemLogos<T extends Prisma.Logo$orderItemLogosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Logo$orderItemLogosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderItemLogoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  priceHistory<T extends Prisma.Logo$priceHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Logo$priceHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LogoPriceHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1978,6 +2100,30 @@ export type Logo$orderItemLogosArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.OrderItemLogoScalarFieldEnum | Prisma.OrderItemLogoScalarFieldEnum[]
+}
+
+/**
+ * Logo.priceHistory
+ */
+export type Logo$priceHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LogoPriceHistory
+   */
+  select?: Prisma.LogoPriceHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LogoPriceHistory
+   */
+  omit?: Prisma.LogoPriceHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LogoPriceHistoryInclude<ExtArgs> | null
+  where?: Prisma.LogoPriceHistoryWhereInput
+  orderBy?: Prisma.LogoPriceHistoryOrderByWithRelationInput | Prisma.LogoPriceHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.LogoPriceHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LogoPriceHistoryScalarFieldEnum | Prisma.LogoPriceHistoryScalarFieldEnum[]
 }
 
 /**

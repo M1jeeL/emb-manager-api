@@ -404,6 +404,7 @@ export const ModelName = {
   Customer: 'Customer',
   Garment: 'Garment',
   Logo: 'Logo',
+  LogoPriceHistory: 'LogoPriceHistory',
   LogoVersion: 'LogoVersion',
   LogoFile: 'LogoFile',
   Order: 'Order',
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "user" | "employee" | "machine" | "customer" | "garment" | "logo" | "logoVersion" | "logoFile" | "order" | "orderItem" | "orderItemLogo" | "payment" | "productionJob" | "orderStatusHistory" | "orderItemStatusHistory" | "auditLog" | "plan" | "subscription" | "billingEvent"
+    modelProps: "organization" | "user" | "employee" | "machine" | "customer" | "garment" | "logo" | "logoPriceHistory" | "logoVersion" | "logoFile" | "order" | "orderItem" | "orderItemLogo" | "payment" | "productionJob" | "orderStatusHistory" | "orderItemStatusHistory" | "auditLog" | "plan" | "subscription" | "billingEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -951,6 +952,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.LogoCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.LogoCountAggregateOutputType> | number
+        }
+      }
+    }
+    LogoPriceHistory: {
+      payload: Prisma.$LogoPriceHistoryPayload<ExtArgs>
+      fields: Prisma.LogoPriceHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LogoPriceHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LogoPriceHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.LogoPriceHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LogoPriceHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.LogoPriceHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.LogoPriceHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.LogoPriceHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LogoPriceHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.LogoPriceHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>
+        }
+        update: {
+          args: Prisma.LogoPriceHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.LogoPriceHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LogoPriceHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LogoPriceHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.LogoPriceHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LogoPriceHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.LogoPriceHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLogoPriceHistory>
+        }
+        groupBy: {
+          args: Prisma.LogoPriceHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LogoPriceHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LogoPriceHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LogoPriceHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -2076,6 +2151,16 @@ export const LogoScalarFieldEnum = {
 export type LogoScalarFieldEnum = (typeof LogoScalarFieldEnum)[keyof typeof LogoScalarFieldEnum]
 
 
+export const LogoPriceHistoryScalarFieldEnum = {
+  id: 'id',
+  logoId: 'logoId',
+  price: 'price',
+  createdAt: 'createdAt'
+} as const
+
+export type LogoPriceHistoryScalarFieldEnum = (typeof LogoPriceHistoryScalarFieldEnum)[keyof typeof LogoPriceHistoryScalarFieldEnum]
+
+
 export const LogoVersionScalarFieldEnum = {
   id: 'id',
   logoId: 'logoId',
@@ -2806,6 +2891,7 @@ export type GlobalOmitConfig = {
   customer?: Prisma.CustomerOmit
   garment?: Prisma.GarmentOmit
   logo?: Prisma.LogoOmit
+  logoPriceHistory?: Prisma.LogoPriceHistoryOmit
   logoVersion?: Prisma.LogoVersionOmit
   logoFile?: Prisma.LogoFileOmit
   order?: Prisma.OrderOmit

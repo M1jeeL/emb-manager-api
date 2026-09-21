@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CustomersModule } from './modules/customers/customers.module';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { GarmentsModule } from './modules/garments/garments.module';
+import { LogosModule } from './modules/logos/logos.module';
 
 @Global()
 @Module({
@@ -18,6 +19,7 @@ import { GarmentsModule } from './modules/garments/garments.module';
     CustomersModule,
     AuthModule,
     GarmentsModule,
+    LogosModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

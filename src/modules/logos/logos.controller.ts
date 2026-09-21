@@ -1,0 +1,97 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+
+import { LogosService } from './logos.service.js';
+
+import { CreateLogoDto } from './dto/create-logo.dto.js';
+import { UpdateLogoDto } from './dto/update-logo.dto.js';
+import { ChangeLogoStatusDto } from './dto/change-logo-status.dto.js';
+import { LogoQueryDto } from './dto/logo-query.dto.js';
+import { CreateLogoVersionDto } from './dto/create-logo-version.dto.js';
+import { CreateLogoFileDto } from './dto/create-logo-file.dto.js';
+
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard.js';
+import { SubscriptionGuard } from '../../common/guards/subscription.guard.js';
+import { RolesGuard } from '../../common/guards/roles.guard.js';
+
+import { Roles } from '../../common/decorators/roles.decorators.js';
+import { CurrentUser } from '../../common/decorators/current-user.decorators.js';
+
+import type { JwtUser } from '../../common/interfaces/jwt-user.interface.js';
+import { UserRole } from '../../generated/prisma/enums.js';
+
+@Controller('logos')
+@UseGuards(JwtAuthGuard, SubscriptionGuard, RolesGuard)
+export class LogosController {
+  constructor(private readonly logosService: LogosService) {}
+
+  @Post()
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  create(@CurrentUser() user: JwtUser, @Body() dto: CreateLogoDto) {
+    return this.logosService.create(user.organizationId, dto);
+  }
+
+  @Get()
+  findAll(@CurrentUser() user: JwtUser, @Query() query: LogoQueryDto) {
+    return this.logosService.findAll(user.organizationId, query);
+  }
+
+  @Get(':id')
+  findOne(@CurrentUser() user: JwtUser, @Param('id') id: string) {
+    return this.logosService.findOne(user.organizationId, id);
+  }
+
+  @Patch(':id')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  update(
+    @CurrentUser() user: JwtUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateLogoDto,
+  ) {
+    return this.logosService.update(user.organizationId, id, dto);
+  }
+
+  @Patch(':id/status')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  changeStatus(
+    @CurrentUser() user: JwtUser,
+    @Param('id') id: string,
+    @Body() dto: ChangeLogoStatusDto,
+  ) {
+    return this.logosService.changeStatus(user.organizationId, id, dto);
+  }
+
+  @Post(':id/versions')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  createVersion(
+    @CurrentUser() user: JwtUser,
+    @Param('id') id: string,
+    @Body() dto: CreateLogoVersionDto,
+  ) {
+    return this.logosService.createVersion(user.organizationId, id, dto);
+  }
+
+  @Post(':id/versions/:versionId/files')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  createFile(
+    @CurrentUser() user: JwtUser,
+    @Param('id') id: string,
+    @Param('versionId') versionId: string,
+    @Body() dto: CreateLogoFileDto,
+  ) {
+    return this.logosService.createFile(
+      user.organizationId,
+      id,
+      versionId,
+      dto,
+    );
+  }
+}
