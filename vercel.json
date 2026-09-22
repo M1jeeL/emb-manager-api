@@ -2,17 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/main.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["node_modules/@nestjs/config/**/*"]
-      }
+      "src": "src/main.ts",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "src/main.js"
+      "dest": "src/main.ts",
+      "methods": ["GET", "POST", "PUT", "DELETE"]
     }
   ]
 }
