@@ -17,6 +17,7 @@ import { Prisma } from '../../generated/prisma/client.js';
 import { StorageService } from '../storage/storage.service.js';
 import { LogoFileType } from '../../generated/prisma/enums.js';
 import { randomUUID } from 'node:crypto';
+import { UpdateLogoVersionDto } from './dto/update-logo-version.dto.js';
 
 @Injectable()
 export class LogosService {
@@ -780,5 +781,51 @@ export class LogosService {
       mimeType: file.mimeType,
       expiresIn: 300,
     };
+  }
+
+  async updateVersion(
+    organizationId: string,
+    logoId: string,
+    versionId: string,
+    dto: UpdateLogoVersionDto,
+  ) {
+    await this.getLogoOrThrow(organizationId, logoId);
+
+    const version = await this.prisma.logoVersion.findFirst({
+      where: {
+        id: versionId,
+        logoId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!version) {
+      throw new NotFoundException('Versión del logo no encontrada');
+    }
+
+    return this.prisma.logoVersion.update({
+      where: {
+        id: versionId,
+      },
+      data: {
+        ...(dto.widthMm !== undefined && {
+          widthMm: new Prisma.Decimal(dto.widthMm),
+        }),
+
+        ...(dto.heightMm !== undefined && {
+          heightMm: new Prisma.Decimal(dto.heightMm),
+        }),
+
+        ...(dto.stitchCount !== undefined && {
+          stitchCount: dto.stitchCount,
+        }),
+
+        ...(dto.notes !== undefined && {
+          notes: dto.notes.trim(),
+        }),
+      },
+    });
   }
 }

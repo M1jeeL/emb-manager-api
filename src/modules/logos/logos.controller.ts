@@ -34,6 +34,7 @@ import type { JwtUser } from '../../common/interfaces/jwt-user.interface.js';
 import { UserRole } from '../../generated/prisma/enums.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { UpdateLogoVersionDto } from './dto/update-logo-version.dto.js';
 
 @Controller('logos')
 @UseGuards(JwtAuthGuard, SubscriptionGuard, RolesGuard)
@@ -157,6 +158,21 @@ export class LogosController {
       logoId,
       versionId,
       fileId,
+    );
+  }
+
+  @Patch(':id/versions/:versionId')
+  updateVersion(
+    @CurrentUser() user: JwtUser,
+    @Param('id') logoId: string,
+    @Param('versionId') versionId: string,
+    @Body() dto: UpdateLogoVersionDto,
+  ) {
+    return this.logosService.updateVersion(
+      user.organizationId,
+      logoId,
+      versionId,
+      dto,
     );
   }
 }
