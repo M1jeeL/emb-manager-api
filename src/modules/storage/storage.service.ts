@@ -1,12 +1,13 @@
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-
 import { Injectable } from '@nestjs/common';
-
 import { ConfigService } from '@nestjs/config';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class StorageService {
@@ -27,7 +28,6 @@ export class StorageService {
         Bucket: this.bucket,
         Key: key,
         Body: file,
-
         ...(contentType
           ? {
               ContentType: contentType,
@@ -47,6 +47,27 @@ export class StorageService {
       new DeleteObjectCommand({
         Bucket: this.bucket,
         Key: key,
+      }),
+    );
+  }
+
+  async getDownloadUrl(key: string, expiresIn = 300) {
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+
+    return getSignedUrl(this.s3Client, command, {
+      expiresIn,
+    });
+  }
+
+  async list(prefix: string, continuationToken?: string) {
+    return this.s3Client.send(
+      new ListObjectsV2Command({
+        Bucket: this.bucket,
+        Prefix: prefix,
+        ContinuationToken: continuationToken,
       }),
     );
   }

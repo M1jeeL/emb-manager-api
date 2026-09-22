@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -14,11 +15,18 @@ import { CreateLogoVersionDto } from './dto/create-logo-version.dto.js';
 import { CreateLogoFileDto } from './dto/create-logo-file.dto.js';
 import { Prisma } from '../../generated/prisma/client.js';
 import { StorageService } from '../storage/storage.service.js';
-
+import { LogoFileType } from '../../generated/prisma/enums.js';
 import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class LogosService {
+  private readonly imageExtensions = new Set(['png', 'jpg', 'jpeg', 'webp']);
+
+  private readonly embroideryExtensions = new Set(['dst', 'pes', 'jef', 'exp']);
+
+  private readonly maxImageSize = 10 * 1024 * 1024;
+  private readonly maxEmbroiderySize = 25 * 1024 * 1024;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly storageService: StorageService,
@@ -346,7 +354,19 @@ export class LogosService {
       buffer: Buffer;
     },
   ) {
-    const logo = await this.getLogoOrThrow(organizationId, logoId);
+    const logo = await this.prisma.logo.findFirst({
+      where: {
+        id: logoId,
+        organizationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!logo) {
+      throw new NotFoundException('Logo no encontrado');
+    }
 
     const version = await this.prisma.logoVersion.findFirst({
       where: {
@@ -362,72 +382,54 @@ export class LogosService {
       throw new NotFoundException('Versión del logo no encontrada');
     }
 
+    const extension = this.validateFile(dto.type, file);
+
     const safeFileName = this.sanitizeFileName(file.originalname);
 
     const storageKey = [
       'organizations',
       organizationId,
       'logos',
-      logo.id,
+      logoId,
       'versions',
-      version.id,
+      versionId,
       `${randomUUID()}-${safeFileName}`,
     ].join('/');
 
-    let uploaded = false;
+    await this.storageService.upload(storageKey, file.buffer, file.mimetype);
 
     try {
-      await this.storageService.upload(storageKey, file.buffer, file.mimetype);
-
-      uploaded = true;
-
-      const result = await this.prisma.$transaction(async (tx) => {
-        if (dto.isPrimary === true) {
+      const createdFile = await this.prisma.$transaction(async (tx) => {
+        if (dto.isPrimary) {
           await tx.logoFile.updateMany({
             where: {
               logoVersionId: versionId,
               type: dto.type,
+              isPrimary: true,
             },
-
             data: {
               isPrimary: false,
             },
           });
         }
 
-        const logoFile = await tx.logoFile.create({
+        return tx.logoFile.create({
           data: {
             logoVersionId: versionId,
-
             type: dto.type,
-
-            format: dto.format.trim().toUpperCase(),
-
+            format: extension.toUpperCase(),
             fileName: file.originalname,
-
             storageKey,
-
             mimeType: file.mimetype,
-
             fileSize: BigInt(file.size),
-
             isPrimary: dto.isPrimary ?? false,
           },
         });
-
-        return logoFile;
       });
 
-      return this.serializeFile(result);
+      return this.serializeFile(createdFile);
     } catch (error) {
-      if (uploaded) {
-        try {
-          await this.storageService.delete(storageKey);
-        } catch {
-          // Evitamos ocultar el error original.
-        }
-      }
-
+      await this.storageService.delete(storageKey);
       throw error;
     }
   }
@@ -587,16 +589,24 @@ export class LogosService {
     }
   }
 
-  private serializeFile<
-    T extends {
-      fileSize: bigint | null;
-    },
-  >(file: T) {
+  private serializeFile(file: {
+    id: string;
+    logoVersionId: string;
+    type: LogoFileType;
+    format: string;
+    fileName: string;
+    storageKey: string;
+    mimeType: string | null;
+    fileSize: bigint | null;
+    isPrimary: boolean;
+    createdAt: Date;
+  }) {
     return {
       ...file,
-      fileSize: file.fileSize !== null ? file.fileSize.toString() : null,
+      fileSize: file.fileSize?.toString() ?? null,
     };
   }
+
   private sanitizeFileName(fileName: string) {
     return fileName
       .normalize('NFKD')
@@ -605,5 +615,170 @@ export class LogosService {
       .replace(/-+/g, '-')
       .replace(/^\.+/, '')
       .slice(0, 180);
+  }
+
+  private validateFile(
+    type: LogoFileType,
+    file: {
+      originalname: string;
+      mimetype: string;
+      size: number;
+    },
+  ) {
+    const extension = file.originalname.split('.').pop()?.toLowerCase() ?? '';
+
+    if (!extension) {
+      throw new BadRequestException(
+        'El archivo debe tener una extensión válida',
+      );
+    }
+
+    if (type === LogoFileType.IMAGE) {
+      if (!this.imageExtensions.has(extension)) {
+        throw new BadRequestException('El formato de imagen no está permitido');
+      }
+
+      if (file.size > this.maxImageSize) {
+        throw new BadRequestException(
+          'Las imágenes no pueden superar los 10 MB',
+        );
+      }
+
+      const allowedMimeTypes = new Set([
+        'image/png',
+        'image/jpeg',
+        'image/webp',
+      ]);
+
+      if (!allowedMimeTypes.has(file.mimetype)) {
+        throw new BadRequestException('El tipo MIME de la imagen no es válido');
+      }
+
+      return extension;
+    }
+
+    if (type === LogoFileType.EMBROIDERY) {
+      if (!this.embroideryExtensions.has(extension)) {
+        throw new BadRequestException(
+          'El formato de bordado no está permitido',
+        );
+      }
+
+      if (file.size > this.maxEmbroiderySize) {
+        throw new BadRequestException(
+          'Los archivos de bordado no pueden superar los 25 MB',
+        );
+      }
+
+      return extension;
+    }
+
+    throw new BadRequestException('Tipo de archivo no soportado');
+  }
+
+  async deleteFile(
+    organizationId: string,
+    logoId: string,
+    versionId: string,
+    fileId: string,
+  ) {
+    const logo = await this.prisma.logo.findFirst({
+      where: {
+        id: logoId,
+        organizationId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!logo) {
+      throw new NotFoundException('Logo no encontrado');
+    }
+
+    const version = await this.prisma.logoVersion.findFirst({
+      where: {
+        id: versionId,
+        logoId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!version) {
+      throw new NotFoundException('Versión del logo no encontrada');
+    }
+
+    const file = await this.prisma.logoFile.findFirst({
+      where: {
+        id: fileId,
+        logoVersionId: versionId,
+      },
+    });
+
+    if (!file) {
+      throw new NotFoundException('Archivo no encontrado');
+    }
+
+    await this.prisma.logoFile.delete({
+      where: {
+        id: file.id,
+      },
+    });
+
+    try {
+      await this.storageService.delete(file.storageKey);
+    } catch (error) {
+      // El archivo queda como huérfano en S3.
+      // El proceso de reconciliación podrá eliminarlo.
+      console.error(
+        `No se pudo eliminar archivo S3: ${file.storageKey}`,
+        error,
+      );
+    }
+
+    return {
+      message: 'Archivo eliminado correctamente',
+    };
+  }
+
+  async getDownloadUrl(
+    organizationId: string,
+    logoId: string,
+    versionId: string,
+    fileId: string,
+  ) {
+    const file = await this.prisma.logoFile.findFirst({
+      where: {
+        id: fileId,
+        logoVersionId: versionId,
+        logoVersion: {
+          logoId,
+          logo: {
+            organizationId,
+          },
+        },
+      },
+      select: {
+        id: true,
+        fileName: true,
+        mimeType: true,
+        storageKey: true,
+      },
+    });
+
+    if (!file) {
+      throw new NotFoundException('Archivo no encontrado');
+    }
+
+    const url = await this.storageService.getDownloadUrl(file.storageKey, 300);
+
+    return {
+      url,
+      fileName: file.fileName,
+      mimeType: file.mimeType,
+      expiresIn: 300,
+    };
   }
 }

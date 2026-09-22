@@ -5,6 +5,8 @@ import {
   UseInterceptors,
   UseGuards,
   ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 
 import { StorageService } from './storage.service';
@@ -26,8 +28,8 @@ export class StorageController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          //new MaxFileSizeValidator({ maxSize: 10000 }),
-          //new FileTypeValidator({ fileType: 'image/jpeg' }),
+          new MaxFileSizeValidator({ maxSize: 25 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: 'image/*' }),
         ],
       }),
     )

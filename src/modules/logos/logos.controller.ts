@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   MaxFileSizeValidator,
   ParseFilePipe,
+  Delete,
 } from '@nestjs/common';
 
 import { LogosService } from './logos.service.js';
@@ -123,6 +124,39 @@ export class LogosController {
       versionId,
       dto,
       file,
+    );
+  }
+
+  @UseGuards(ThrottlerGuard)
+  @Delete(':id/versions/:versionId/files/:fileId')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  deleteFile(
+    @CurrentUser() user: JwtUser,
+    @Param('id') logoId: string,
+    @Param('versionId') versionId: string,
+    @Param('fileId') fileId: string,
+  ) {
+    return this.logosService.deleteFile(
+      user.organizationId,
+      logoId,
+      versionId,
+      fileId,
+    );
+  }
+
+  @Get(':id/versions/:versionId/files/:fileId/download')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER, UserRole.EMPLOYEE)
+  async downloadFile(
+    @CurrentUser() user: JwtUser,
+    @Param('id') logoId: string,
+    @Param('versionId') versionId: string,
+    @Param('fileId') fileId: string,
+  ) {
+    return this.logosService.getDownloadUrl(
+      user.organizationId,
+      logoId,
+      versionId,
+      fileId,
     );
   }
 }
