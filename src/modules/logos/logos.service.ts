@@ -23,7 +23,13 @@ import { UpdateLogoVersionDto } from './dto/update-logo-version.dto.js';
 export class LogosService {
   private readonly imageExtensions = new Set(['png', 'jpg', 'jpeg', 'webp']);
 
-  private readonly embroideryExtensions = new Set(['dst', 'pes', 'jef', 'exp']);
+  private readonly embroideryExtensions = new Set([
+    'dst',
+    'pes',
+    'jef',
+    'exp',
+    'emb',
+  ]);
 
   private readonly maxImageSize = 10 * 1024 * 1024;
   private readonly maxEmbroiderySize = 25 * 1024 * 1024;
