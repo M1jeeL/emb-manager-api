@@ -16,12 +16,11 @@ export class CreateOrderLogoDto {
   @IsString()
   description?: string;
 
-  @IsOptional()
   @IsDecimal(
     { decimal_digits: '0,2' },
     {
       message: 'El precio del logo debe ser un número decimal válido',
     },
   )
-  currentPrice?: string;
+  currentPrice!: string;
 }

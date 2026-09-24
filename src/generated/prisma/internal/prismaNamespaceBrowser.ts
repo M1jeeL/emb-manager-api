@@ -279,7 +279,6 @@ export const OrderItemScalarFieldEnum = {
   garmentId: 'garmentId',
   description: 'description',
   quantity: 'quantity',
-  unitPrice: 'unitPrice',
   subtotal: 'subtotal',
   status: 'status',
   notes: 'notes',
@@ -297,7 +296,6 @@ export const OrderItemLogoScalarFieldEnum = {
   logoName: 'logoName',
   unitPrice: 'unitPrice',
   quantity: 'quantity',
-  placement: 'placement',
   notes: 'notes',
   createdAt: 'createdAt'
 } as const

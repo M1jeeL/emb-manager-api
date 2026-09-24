@@ -1,6 +1,5 @@
 import {
   IsArray,
-  IsDecimal,
   IsInt,
   IsOptional,
   IsString,
@@ -24,14 +23,6 @@ export class CreateOrderItemDto {
   @IsInt()
   @Min(1)
   quantity!: number;
-
-  @IsDecimal(
-    { decimal_digits: '0,2' },
-    {
-      message: 'El precio unitario debe ser un número decimal válido',
-    },
-  )
-  unitPrice!: string;
 
   @IsOptional()
   @IsArray()

@@ -25,10 +25,6 @@ export class CreateOrderItemLogoDto {
   logo?: CreateOrderLogoDto;
 
   @IsOptional()
-  @IsString()
-  placement?: string;
-
-  @IsOptional()
   @IsInt()
   @Min(1)
   quantity?: number;

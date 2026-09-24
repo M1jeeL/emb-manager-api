@@ -517,10 +517,6 @@ model OrderItem {
 
   quantity Int
 
-  // Snapshot del precio de la prenda al momento
-  // de agregarla al pedido.
-  unitPrice Decimal @db.Decimal(12, 2)
-
   subtotal Decimal @db.Decimal(12, 2)
 
   status OrderItemStatus @default(PENDING)
@@ -563,13 +559,6 @@ model OrderItemLogo {
   unitPrice Decimal @db.Decimal(12, 2)
 
   quantity Int @default(1)
-
-  // Ej:
-  // PECHO_IZQUIERDO
-  // ESPALDA
-  // MANGA
-  // PECHO_DERECHO
-  placement String?
 
   notes String?
 

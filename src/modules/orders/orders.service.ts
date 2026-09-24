@@ -21,7 +21,6 @@ type PreparedOrderItemLogo = {
   logoName: string;
   unitPrice: Prisma.Decimal;
   quantity: number;
-  placement: string | undefined;
   notes: string | undefined;
 };
 @Injectable()
@@ -263,7 +262,6 @@ export class OrdersService {
               garmentId: item.garmentId,
               description: item.description,
               quantity: item.quantity,
-              unitPrice: item.unitPrice,
               subtotal: item.subtotal,
               notes: item.notes,
 
@@ -663,7 +661,6 @@ export class OrdersService {
       garmentId: string;
       description: string | undefined;
       quantity: number;
-      unitPrice: Prisma.Decimal;
       subtotal: Prisma.Decimal;
       notes: string | undefined;
       logos: Array<{
@@ -671,7 +668,6 @@ export class OrdersService {
         logoName: string;
         unitPrice: Prisma.Decimal;
         quantity: number;
-        placement: string | undefined;
         notes: string | undefined;
       }>;
     }> = [];
@@ -680,14 +676,6 @@ export class OrdersService {
       if (item.quantity <= 0) {
         throw new BadRequestException(
           'La cantidad de una prenda debe ser mayor a cero',
-        );
-      }
-
-      const unitPrice = this.toDecimal(item.unitPrice);
-
-      if (unitPrice.lessThan(0)) {
-        throw new BadRequestException(
-          'El precio de una prenda no puede ser negativo',
         );
       }
 
@@ -714,6 +702,12 @@ export class OrdersService {
       if (!garment.active) {
         throw new ConflictException(
           'No se puede agregar una prenda inactiva a un pedido',
+        );
+      }
+
+      if (!item.logos || item.logos.length === 0) {
+        throw new BadRequestException(
+          'Cada item debe contener al menos un logo',
         );
       }
 
@@ -768,6 +762,12 @@ export class OrdersService {
             );
           }
 
+          if (logo.customerId && logo.customerId !== customerId) {
+            throw new ConflictException(
+              `El logo "${logo.name}" pertenece a otro cliente y no puede utilizarse en este pedido`,
+            );
+          }
+
           /*
            * Por defecto utilizamos el precio actual
            * del logo como snapshot del pedido.
@@ -779,15 +779,9 @@ export class OrdersService {
            */
           preparedLogos.push({
             logoId: logo.id,
-
             logoName: logo.name,
-
             unitPrice: logo.currentPrice,
-
             quantity,
-
-            placement: this.cleanOptionalString(logoDto.placement),
-
             notes: this.cleanOptionalString(logoDto.notes),
           });
 
@@ -808,7 +802,7 @@ export class OrdersService {
           );
         }
 
-        const logoPrice = this.toDecimal(logoData.currentPrice ?? '0');
+        const logoPrice = this.toDecimal(logoData.currentPrice);
 
         if (logoPrice.lessThan(0)) {
           throw new BadRequestException(
@@ -881,17 +875,9 @@ export class OrdersService {
 
           quantity,
 
-          placement: this.cleanOptionalString(logoDto.placement),
-
           notes: this.cleanOptionalString(logoDto.notes),
         });
       }
-
-      // ------------------------------------------------------
-      // ITEM SUBTOTAL
-      // ------------------------------------------------------
-
-      const garmentSubtotal = unitPrice.mul(item.quantity);
 
       /*
        * Los logos representan un cargo adicional.
@@ -901,26 +887,17 @@ export class OrdersService {
        *
        * y se suma al valor de las prendas.
        */
-      const logoSubtotal = preparedLogos.reduce(
+      const itemSubtotal = preparedLogos.reduce(
         (acc, logo) => acc.plus(logo.unitPrice.mul(logo.quantity)),
         new Prisma.Decimal(0),
       );
 
-      const itemSubtotal = garmentSubtotal.plus(logoSubtotal);
-
       preparedItems.push({
         garmentId: garment.id,
-
         description: this.cleanOptionalString(item.description),
-
         quantity: item.quantity,
-
-        unitPrice,
-
         subtotal: itemSubtotal,
-
         notes: this.cleanOptionalString(item.notes),
-
         logos: preparedLogos,
       });
     }
