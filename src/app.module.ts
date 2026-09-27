@@ -9,6 +9,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { GarmentsModule } from './modules/garments/garments.module';
 import { LogosModule } from './modules/logos/logos.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { EmployeesModule } from './modules/employees/employees.module';
 
 @Global()
 @Module({
@@ -22,6 +23,7 @@ import { StorageModule } from './modules/storage/storage.module';
     GarmentsModule,
     LogosModule,
     StorageModule,
+    EmployeesModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
