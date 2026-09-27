@@ -10,21 +10,25 @@ import {
 } from 'class-validator';
 
 import { OrderStatus, PaymentStatus } from '../../../generated/prisma/enums.js';
+import { Type } from 'class-transformer';
 
 export class OrderQueryDto {
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @IsPositive()
   @Min(1)
   page?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @IsPositive()
   @Max(100)
   limit?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @IsPositive()
   orderNumber?: number;
