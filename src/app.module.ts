@@ -11,6 +11,7 @@ import { LogosModule } from './modules/logos/logos.module';
 import { StorageModule } from './modules/storage/storage.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { MachinesModule } from './modules/machines/machines.module';
+import { ProductionsModule } from './modules/productions/productions.module';
 
 @Global()
 @Module({
@@ -26,6 +27,7 @@ import { MachinesModule } from './modules/machines/machines.module';
     StorageModule,
     EmployeesModule,
     MachinesModule,
+    ProductionsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
