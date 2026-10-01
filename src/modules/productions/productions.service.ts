@@ -1272,4 +1272,105 @@ export class ProductionsService {
 
     return trimmed || null;
   }
+
+  // ============================================================
+  // AVAILABLE ORDERS FOR PRODUCTION
+  // ============================================================
+
+  async findAvailableOrders(organizationId: string) {
+    type AvailableOrderRow = {
+      id: string;
+      orderNumber: number;
+      promisedAt: Date | null;
+      customerId: string;
+      customerName: string;
+      companyName: string | null;
+    };
+
+    const rows = await this.prisma.$queryRaw<AvailableOrderRow[]>`
+    SELECT DISTINCT
+      o.id,
+      o."orderNumber",
+      o."promisedAt",
+      c.id AS "customerId",
+      c.name AS "customerName",
+      c."companyName"
+    FROM "orders" o
+    INNER JOIN "customers" c
+      ON c.id = o."customerId"
+    INNER JOIN "order_items" oi
+      ON oi."orderId" = o.id
+
+    WHERE
+      o."organizationId" = ${organizationId}
+
+      AND o.status NOT IN ('QUOTE', 'DELIVERED', 'CANCELLED')
+
+      AND (
+        /*
+         * ------------------------------------------------------
+         * ITEM CON LOGOS
+         * ------------------------------------------------------
+         *
+         * Si al menos uno de sus logos todavía tiene
+         * cantidad pendiente de producción.
+         */
+        (
+          EXISTS (
+            SELECT 1
+            FROM "order_item_logos" oil
+            WHERE oil."orderItemId" = oi.id
+
+              AND oil.quantity > (
+                SELECT COALESCE(SUM(pj.quantity), 0)
+                FROM "production_jobs" pj
+                WHERE pj."orderItemLogoId" = oil.id
+                  AND pj.status <> 'CANCELLED'
+              )
+          )
+        )
+
+        OR
+
+        /*
+         * ------------------------------------------------------
+         * ITEM SIN LOGOS
+         * ------------------------------------------------------
+         *
+         * La cantidad total del item menos lo ya asignado
+         * a producción.
+         */
+        (
+          NOT EXISTS (
+            SELECT 1
+            FROM "order_item_logos" oil
+            WHERE oil."orderItemId" = oi.id
+          )
+
+          AND oi.quantity > (
+            SELECT COALESCE(SUM(pj.quantity), 0)
+            FROM "production_jobs" pj
+            WHERE pj."orderItemId" = oi.id
+              AND pj."orderItemLogoId" IS NULL
+              AND pj.status <> 'CANCELLED'
+          )
+        )
+      )
+
+    ORDER BY
+      o."promisedAt" ASC NULLS LAST,
+      o."orderNumber" ASC
+  `;
+
+    return rows.map((row) => ({
+      id: row.id,
+      orderNumber: row.orderNumber,
+      promisedAt: row.promisedAt,
+      customer: {
+        id: row.customerId,
+        name: row.customerName,
+        companyName: row.companyName,
+      },
+    }));
+  }
 }

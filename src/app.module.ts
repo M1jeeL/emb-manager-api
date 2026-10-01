@@ -12,6 +12,7 @@ import { StorageModule } from './modules/storage/storage.module';
 import { EmployeesModule } from './modules/employees/employees.module';
 import { MachinesModule } from './modules/machines/machines.module';
 import { ProductionsModule } from './modules/productions/productions.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Global()
 @Module({
@@ -28,6 +29,7 @@ import { ProductionsModule } from './modules/productions/productions.module';
     EmployeesModule,
     MachinesModule,
     ProductionsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

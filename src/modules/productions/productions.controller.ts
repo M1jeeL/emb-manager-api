@@ -70,6 +70,16 @@ export class ProductionsController {
   }
 
   // ============================================================
+  // AVAILABLE ORDERS
+  // ============================================================
+
+  @Get('available-orders')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
+  findAvailableOrders(@CurrentUser() user: JwtUser) {
+    return this.productionService.findAvailableOrders(user.organizationId);
+  }
+
+  // ============================================================
   // FIND ONE
   // ============================================================
 
