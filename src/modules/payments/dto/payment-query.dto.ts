@@ -9,24 +9,29 @@ import {
 } from 'class-validator';
 
 import { PaymentMethod } from '../../../generated/prisma/enums.js';
+import { Type } from 'class-transformer';
 
 export class PaymentQueryDto {
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   page?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   @Max(100)
   limit?: number;
 
   @IsOptional()
+  @Type(() => Number)
   @IsUUID()
   orderId?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   orderNumber?: number;

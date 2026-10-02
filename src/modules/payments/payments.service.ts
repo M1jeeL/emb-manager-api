@@ -406,4 +406,52 @@ export class PaymentsService {
 
     return trimmed || null;
   }
+  async findAvailableOrders(organizationId: string) {
+    const orders = await this.prisma.order.findMany({
+      where: {
+        organizationId,
+
+        status: {
+          notIn: ['QUOTE', 'CANCELLED'],
+        },
+
+        paymentStatus: {
+          in: ['UNPAID', 'PARTIAL'],
+        },
+      },
+
+      select: {
+        id: true,
+        orderNumber: true,
+        status: true,
+        total: true,
+        paidAmount: true,
+        paymentStatus: true,
+
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            companyName: true,
+          },
+        },
+      },
+
+      orderBy: {
+        orderNumber: 'desc',
+      },
+    });
+
+    return orders
+      .filter((order) => order.paidAmount.lessThan(order.total))
+      .map((order) => ({
+        id: order.id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        total: order.total.toString(),
+        paidAmount: order.paidAmount.toString(),
+        paymentStatus: order.paymentStatus,
+        customer: order.customer,
+      }));
+  }
 }

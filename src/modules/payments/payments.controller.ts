@@ -41,6 +41,11 @@ export class PaymentsController {
     return this.paymentsService.create(user.organizationId, dto);
   }
 
+  @Get('available-orders')
+  async findAvailableOrders(@CurrentUser() user: JwtUser) {
+    return this.paymentsService.findAvailableOrders(user.organizationId);
+  }
+
   // ============================================================
   // FIND ALL
   // ============================================================
