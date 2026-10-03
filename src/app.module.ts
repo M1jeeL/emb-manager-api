@@ -13,6 +13,7 @@ import { EmployeesModule } from './modules/employees/employees.module';
 import { MachinesModule } from './modules/machines/machines.module';
 import { ProductionsModule } from './modules/productions/productions.module';
 import { PaymentsModule } from './modules/payments/payments.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Global()
 @Module({
@@ -30,6 +31,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     MachinesModule,
     ProductionsModule,
     PaymentsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
