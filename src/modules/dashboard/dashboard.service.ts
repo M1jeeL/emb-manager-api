@@ -3,12 +3,29 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { DashboardQueryDto } from './dto/dashboard-query.dto.js';
 import { DashboardOverviewQuery } from './queries/dashboard-overview.query.js';
 import type { DashboardOverviewResponse } from './types/dashboard-overview.type.js';
+import { DashboardSalesQuery } from './queries/dashboard-sales.query.js';
+import type { DashboardSalesResponse } from './types/dashboard-sales.type.js';
+import { DashboardOperationsQuery } from './queries/dashboard-operations.query.js';
+import type { DashboardOperationsResponse } from './types/dashboard-operations.type.js';
+import { DashboardProductionQuery } from './queries/dashboard-production.query.js';
+import { DashboardProductionResponse } from './types/dashboard-production.type.js';
+import { DashboardCustomersQuery } from './queries/dashboard-customers.query.js';
+import { DashboardCustomersResponse } from './types/dashboard-customers.type.js';
+import { DashboardAlertsQuery } from './queries/dashboard-alerts.query.js';
+import { DashboardAlertsResponse } from './types/dashboard-alerts.type.js';
 
 @Injectable()
 export class DashboardService {
   private static readonly MAX_PERIOD_DAYS = 366;
 
-  constructor(private readonly overviewQuery: DashboardOverviewQuery) {}
+  constructor(
+    private readonly overviewQuery: DashboardOverviewQuery,
+    private readonly salesQuery: DashboardSalesQuery,
+    private readonly operationsQuery: DashboardOperationsQuery,
+    private readonly productionQuery: DashboardProductionQuery,
+    private readonly customersQuery: DashboardCustomersQuery,
+    private readonly alertsQuery: DashboardAlertsQuery,
+  ) {}
 
   async getOverview(
     organizationId: string,
@@ -96,6 +113,126 @@ export class DashboardService {
 
         machines,
       },
+    };
+  }
+
+  async getSales(
+    organizationId: string,
+    query: DashboardQueryDto,
+  ): Promise<DashboardSalesResponse> {
+    const bounds = this.resolvePeriod(query);
+
+    const [summary, daily, paymentMethods] = await Promise.all([
+      this.salesQuery.getSummary(organizationId, bounds),
+
+      this.salesQuery.getDailySales(organizationId, bounds),
+
+      this.salesQuery.getPaymentMethods(organizationId, bounds),
+    ]);
+
+    const averageOrderValue =
+      summary.orders > 0
+        ? this.divideMoney(summary.revenue, summary.orders)
+        : '0';
+
+    return {
+      period: {
+        from: bounds.from,
+        to: bounds.to,
+        previousFrom: bounds.previousFrom,
+        previousTo: bounds.previousTo,
+      },
+
+      summary: {
+        revenue: summary.revenue,
+        paid: summary.paid,
+        orders: summary.orders,
+        averageOrderValue,
+
+        revenueVariationPercent: summary.revenueVariationPercent,
+
+        paidVariationPercent: summary.paidVariationPercent,
+
+        ordersVariationPercent: summary.ordersVariationPercent,
+      },
+
+      daily,
+
+      paymentMethods,
+    };
+  }
+
+  async getOperations(
+    organizationId: string,
+    query: DashboardQueryDto,
+  ): Promise<DashboardOperationsResponse> {
+    const bounds = this.resolvePeriod(query);
+
+    const [summary, fulfillment, upcoming] = await Promise.all([
+      this.operationsQuery.getSummary(organizationId),
+
+      this.operationsQuery.getFulfillment(organizationId, bounds),
+
+      this.operationsQuery.getUpcoming(organizationId),
+    ]);
+
+    return {
+      period: bounds,
+      summary,
+      fulfillment,
+      upcoming,
+    };
+  }
+
+  async getProduction(
+    organizationId: string,
+    query: DashboardQueryDto,
+  ): Promise<DashboardProductionResponse> {
+    const period = this.resolvePeriod(query);
+
+    const [summary, performance, machines, employees] = await Promise.all([
+      this.productionQuery.getSummary(organizationId),
+
+      this.productionQuery.getPerformance(organizationId, period),
+
+      this.productionQuery.getMachines(organizationId),
+
+      this.productionQuery.getEmployees(organizationId),
+    ]);
+
+    return {
+      period,
+      summary,
+      performance,
+      machines,
+      employees,
+    };
+  }
+
+  async getCustomers(
+    organizationId: string,
+    query: DashboardQueryDto,
+  ): Promise<DashboardCustomersResponse> {
+    const period = this.resolvePeriod(query);
+
+    const [summary, topCustomers] = await Promise.all([
+      this.customersQuery.getSummary(organizationId, period),
+
+      this.customersQuery.getTopCustomers(organizationId, period),
+    ]);
+
+    return {
+      period,
+      summary,
+      topCustomers,
+    };
+  }
+
+  async getAlerts(organizationId: string): Promise<DashboardAlertsResponse> {
+    const alerts = await this.alertsQuery.getAlerts(organizationId);
+
+    return {
+      alerts,
     };
   }
 

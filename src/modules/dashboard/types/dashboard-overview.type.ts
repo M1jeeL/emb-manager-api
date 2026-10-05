@@ -1,9 +1,4 @@
-export interface DashboardPeriod {
-  from: string;
-  to: string;
-  previousFrom: string;
-  previousTo: string;
-}
+import { DashboardPeriodBounds } from './dashboard-period.type';
 
 export interface DashboardSalesOverview {
   revenue: string;
@@ -54,7 +49,7 @@ export interface DashboardCurrentMachines {
 }
 
 export interface DashboardOverviewResponse {
-  period: DashboardPeriod;
+  period: DashboardPeriodBounds;
 
   periodMetrics: {
     sales: DashboardSalesOverview;

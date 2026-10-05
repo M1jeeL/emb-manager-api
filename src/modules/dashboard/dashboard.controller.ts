@@ -20,4 +20,38 @@ export class DashboardController {
   getOverview(@CurrentUser() user: JwtUser, @Query() query: DashboardQueryDto) {
     return this.dashboardService.getOverview(user.organizationId, query);
   }
+
+  @Get('sales')
+  getSales(@CurrentUser() user: JwtUser, @Query() query: DashboardQueryDto) {
+    return this.dashboardService.getSales(user.organizationId, query);
+  }
+
+  @Get('operations')
+  getOperations(
+    @CurrentUser() user: JwtUser,
+    @Query() query: DashboardQueryDto,
+  ) {
+    return this.dashboardService.getOperations(user.organizationId, query);
+  }
+
+  @Get('production')
+  getProduction(
+    @CurrentUser() user: JwtUser,
+    @Query() query: DashboardQueryDto,
+  ) {
+    return this.dashboardService.getProduction(user.organizationId, query);
+  }
+
+  @Get('customers')
+  getCustomers(
+    @CurrentUser() user: JwtUser,
+    @Query() query: DashboardQueryDto,
+  ) {
+    return this.dashboardService.getCustomers(user.organizationId, query);
+  }
+
+  @Get('alerts')
+  getAlerts(@CurrentUser() user: JwtUser) {
+    return this.dashboardService.getAlerts(user.organizationId);
+  }
 }

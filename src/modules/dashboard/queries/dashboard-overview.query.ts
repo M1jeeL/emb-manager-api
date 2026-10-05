@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../../../prisma.service.js';
-
-export interface DashboardPeriodBounds {
-  from: string;
-  to: string;
-  previousFrom: string;
-  previousTo: string;
-}
+import { DashboardPeriodBounds } from '../types/dashboard-period.type.js';
 
 @Injectable()
 export class DashboardOverviewQuery {
@@ -151,33 +145,54 @@ export class DashboardOverviewQuery {
         cancelled: bigint;
       }[]
     >`
-      SELECT
-        COUNT(*) FILTER (
-          WHERE o."status" NOT IN ('QUOTE', 'CANCELLED')
-        ) AS created,
+    SELECT
+      -- Pedidos creados durante el período.
+      COUNT(*) FILTER (
+        WHERE o."status" <> 'QUOTE'
+      ) AS created,
 
-        COUNT(*) FILTER (
-          WHERE o."deliveredAt" IS NOT NULL
-        ) AS delivered,
-
-        COUNT(*) FILTER (
-          WHERE o."status" = 'CANCELLED'
-        ) AS cancelled
-
-      FROM "orders" o
-
-      WHERE o."organizationId" = ${organizationId}
-
-        AND o."orderedAt" >= (
+      -- Pedidos entregados durante el período.
+      COUNT(*) FILTER (
+        WHERE o."deliveredAt" >= (
           ${bounds.from}::date
           AT TIME ZONE 'America/Santiago'
         )
-
-        AND o."orderedAt" < (
+        AND o."deliveredAt" < (
           ${bounds.to}::date
           AT TIME ZONE 'America/Santiago'
-        );
-    `;
+        )
+      ) AS delivered,
+
+      -- Pedidos que cambiaron a CANCELLED durante el período.
+      (
+        SELECT COUNT(DISTINCT h."orderId")
+        FROM "order_status_history" h
+        INNER JOIN "orders" cancelled_order
+          ON cancelled_order."id" = h."orderId"
+        WHERE cancelled_order."organizationId" = ${organizationId}
+          AND h."toStatus" = 'CANCELLED'
+          AND h."createdAt" >= (
+            ${bounds.from}::date
+            AT TIME ZONE 'America/Santiago'
+          )
+          AND h."createdAt" < (
+            ${bounds.to}::date
+            AT TIME ZONE 'America/Santiago'
+          )
+      ) AS cancelled
+
+    FROM "orders" o
+
+    WHERE o."organizationId" = ${organizationId}
+      AND o."orderedAt" >= (
+        ${bounds.from}::date
+        AT TIME ZONE 'America/Santiago'
+      )
+      AND o."orderedAt" < (
+        ${bounds.to}::date
+        AT TIME ZONE 'America/Santiago'
+      );
+  `;
 
     const row = rows[0];
 
@@ -328,54 +343,50 @@ export class DashboardOverviewQuery {
         inProgressUnits: bigint;
       }[]
     >`
-      SELECT
+    SELECT
+      COUNT(*) FILTER (
+        WHERE pj."status" = 'PENDING'
+      ) AS "pendingJobs",
 
-        COUNT(*) FILTER (
-          WHERE pj."status" = 'PENDING'
-        ) AS "pendingJobs",
+      COUNT(*) FILTER (
+        WHERE pj."status" = 'IN_PROGRESS'
+      ) AS "inProgressJobs",
 
-        COUNT(*) FILTER (
-          WHERE pj."status" = 'IN_PROGRESS'
-        ) AS "inProgressJobs",
+      COUNT(*) FILTER (
+        WHERE pj."status" = 'PAUSED'
+      ) AS "pausedJobs",
 
-        COUNT(*) FILTER (
-          WHERE pj."status" = 'PAUSED'
-        ) AS "pausedJobs",
+      COALESCE(
+        SUM(
+          CASE
+            WHEN pj."status" = 'PENDING'
+            THEN pj."quantity"
+            ELSE 0
+          END
+        ),
+        0
+      ) AS "pendingUnits",
 
-        COALESCE(
-          SUM(
-            CASE
-              WHEN pj."status" = 'PENDING'
-              THEN pj."quantity"
-              ELSE 0
-            END
-          ),
-          0
-        ) AS "pendingUnits",
+      COALESCE(
+        SUM(
+          CASE
+            WHEN pj."status" = 'IN_PROGRESS'
+            THEN pj."quantity"
+            ELSE 0
+          END
+        ),
+        0
+      ) AS "inProgressUnits"
 
-        COALESCE(
-          SUM(
-            CASE
-              WHEN pj."status" = 'IN_PROGRESS'
-              THEN pj."quantity"
-              ELSE 0
-            END
-          ),
-          0
-        ) AS "inProgressUnits"
+    FROM "production_jobs" pj
 
-      FROM "production_jobs" pj
+    INNER JOIN "orders" o
+      ON o."id" = pj."orderId"
 
-      INNER JOIN "orders" o
-        ON o."id" = pj."orderId"
-
-      WHERE o."organizationId" = ${organizationId}
-
-        AND pj."status" NOT IN (
-          'COMPLETED',
-          'CANCELLED'
-        );
-    `;
+    WHERE o."organizationId" = ${organizationId}
+      AND o."status" <> 'CANCELLED'
+      AND pj."status" NOT IN ('COMPLETED', 'CANCELLED');
+  `;
 
     const row = rows[0];
 
