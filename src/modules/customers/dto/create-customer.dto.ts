@@ -4,17 +4,20 @@ import {
   IsString,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateCustomerDto {
   @IsString()
   @MinLength(1)
   @MaxLength(150)
-  name: string;
+  name!: string;
 
-  @IsOptional()
+  @ValidateIf(
+    (object, value) => value !== null && value !== undefined && value !== '',
+  )
   @IsEmail()
-  @MaxLength(150)
+  @MaxLength(255)
   email?: string;
 
   @IsOptional()
