@@ -56,6 +56,7 @@ export class ProductionsController {
     return this.productionService.createOrderProduction(
       user.organizationId,
       orderId,
+      user.userId,
       dto,
     );
   }

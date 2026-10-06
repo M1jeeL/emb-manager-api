@@ -299,6 +299,7 @@ export class ProductionsService {
   async createOrderProduction(
     organizationId: string,
     orderId: string,
+    userId: string,
     dto: CreateOrderProductionDto,
   ) {
     return this.prisma.$transaction(
@@ -342,6 +343,10 @@ export class ProductionsService {
           );
         }
 
+        // --------------------------------------------------------
+        // VALIDATE RESOURCES
+        // --------------------------------------------------------
+
         if (dto.machineId) {
           await this.ensureAvailableMachine(tx, organizationId, dto.machineId);
         }
@@ -354,32 +359,72 @@ export class ProductionsService {
           );
         }
 
-        /*
-         * Primero calculamos TODO.
-         *
-         * Si algún item no puede producirse completamente,
-         * lanzamos error antes de crear cualquier ProductionJob.
-         */
+        // --------------------------------------------------------
+        // GET EXISTING PRODUCTION IN ONE QUERY
+        // --------------------------------------------------------
+
+        const existingProduction = await tx.productionJob.findMany({
+          where: {
+            orderId,
+
+            status: {
+              not: ProductionJobStatus.CANCELLED,
+            },
+          },
+
+          select: {
+            orderItemId: true,
+            orderItemLogoId: true,
+            quantity: true,
+          },
+        });
+
+        // --------------------------------------------------------
+        // CALCULATE ALLOCATED QUANTITIES IN MEMORY
+        // --------------------------------------------------------
+
+        const allocated = new Map<string, number>();
+
+        for (const job of existingProduction) {
+          const key = this.getProductionScopeKey(
+            job.orderItemId,
+            job.orderItemLogoId,
+          );
+
+          allocated.set(key, (allocated.get(key) ?? 0) + job.quantity);
+        }
+
+        // --------------------------------------------------------
+        // PREPARE ALL JOBS
+        // --------------------------------------------------------
+
         const jobsToCreate: Array<{
+          orderId: string;
           orderItemId: string;
           orderItemLogoId: string | null;
+          machineId: string | null;
+          employeeId: string | null;
           quantity: number;
+          status: ProductionJobStatus;
+          notes: string | null | undefined;
         }> = [];
 
         for (const item of order.items) {
           this.validateOrderItemForProduction(item.status);
 
-          /*
-           * Item con logos:
-           * cada logo representa un trabajo independiente.
-           */
+          // ------------------------------------------------------
+          // ITEM WITH LOGOS
+          // ------------------------------------------------------
+
           if (item.logos.length > 0) {
             for (const logo of item.logos) {
-              const availableQuantity = await this.getAvailableQuantity(
-                tx,
-                item.id,
-                logo.id,
-                logo.quantity,
+              const key = this.getProductionScopeKey(item.id, logo.id);
+
+              const alreadyAllocated = allocated.get(key) ?? 0;
+
+              const availableQuantity = Math.max(
+                logo.quantity - alreadyAllocated,
+                0,
               );
 
               if (availableQuantity <= 0) {
@@ -387,34 +432,60 @@ export class ProductionsService {
               }
 
               jobsToCreate.push({
+                orderId,
                 orderItemId: item.id,
                 orderItemLogoId: logo.id,
+
+                machineId: dto.machineId ?? null,
+                employeeId: dto.employeeId ?? null,
+
                 quantity: availableQuantity,
+
+                status: ProductionJobStatus.PENDING,
+
+                notes: this.cleanOptionalString(dto.notes),
               });
             }
 
             continue;
           }
 
-          /*
-           * Item sin logos:
-           * un único ProductionJob para el item.
-           */
-          const availableQuantity = await this.getAvailableQuantity(
-            tx,
-            item.id,
-            null,
-            item.quantity,
+          // ------------------------------------------------------
+          // ITEM WITHOUT LOGOS
+          // ------------------------------------------------------
+
+          const key = this.getProductionScopeKey(item.id, null);
+
+          const alreadyAllocated = allocated.get(key) ?? 0;
+
+          const availableQuantity = Math.max(
+            item.quantity - alreadyAllocated,
+            0,
           );
 
-          if (availableQuantity > 0) {
-            jobsToCreate.push({
-              orderItemId: item.id,
-              orderItemLogoId: null,
-              quantity: availableQuantity,
-            });
+          if (availableQuantity <= 0) {
+            continue;
           }
+
+          jobsToCreate.push({
+            orderId,
+            orderItemId: item.id,
+            orderItemLogoId: null,
+
+            machineId: dto.machineId ?? null,
+            employeeId: dto.employeeId ?? null,
+
+            quantity: availableQuantity,
+
+            status: ProductionJobStatus.PENDING,
+
+            notes: this.cleanOptionalString(dto.notes),
+          });
         }
+
+        // --------------------------------------------------------
+        // NOTHING TO PRODUCE
+        // --------------------------------------------------------
 
         if (jobsToCreate.length === 0) {
           throw new BadRequestException(
@@ -422,45 +493,93 @@ export class ProductionsService {
           );
         }
 
-        const productionJobs: Prisma.ProductionJobGetPayload<{
-          select: ProductionsService['productionListSelect'];
-        }>[] = [];
-        for (const job of jobsToCreate) {
-          const productionJob = await tx.productionJob.create({
+        // --------------------------------------------------------
+        // CREATE ALL JOBS IN ONE QUERY
+        // --------------------------------------------------------
+
+        const createdJobs = await tx.productionJob.createManyAndReturn({
+          data: jobsToCreate,
+
+          select: {
+            id: true,
+          },
+        });
+
+        // --------------------------------------------------------
+        // UPDATE ITEM STATES
+        // --------------------------------------------------------
+        //
+        // Todos los jobs recién creados quedan PENDING.
+        // Por lo tanto, cualquier item al que le acabamos
+        // de asignar producción pasa a IN_PROGRESS.
+        //
+
+        const affectedItemIds = [
+          ...new Set(jobsToCreate.map((job) => job.orderItemId)),
+        ];
+
+        await tx.orderItem.updateMany({
+          where: {
+            id: {
+              in: affectedItemIds,
+            },
+          },
+
+          data: {
+            status: OrderItemStatus.IN_PROGRESS,
+          },
+        });
+
+        // --------------------------------------------------------
+        // UPDATE ORDER STATE
+        // --------------------------------------------------------
+
+        const previousOrderStatus = order.status;
+
+        await tx.order.update({
+          where: {
+            id: orderId,
+          },
+
+          data: {
+            status: OrderStatus.IN_PROGRESS,
+          },
+        });
+
+        if (previousOrderStatus !== OrderStatus.IN_PROGRESS) {
+          await tx.orderStatusHistory.create({
             data: {
               orderId,
-              orderItemId: job.orderItemId,
 
-              orderItemLogoId: job.orderItemLogoId,
+              fromStatus: previousOrderStatus,
+              toStatus: OrderStatus.IN_PROGRESS,
 
-              machineId: dto.machineId ?? null,
+              changedByUserId: userId,
 
-              employeeId: dto.employeeId ?? null,
-
-              quantity: job.quantity,
-
-              status: ProductionJobStatus.PENDING,
-
-              notes: this.cleanOptionalString(dto.notes),
+              notes: 'Producción completa creada para el pedido',
             },
-
-            select: this.productionListSelect,
           });
-
-          productionJobs.push(productionJob);
         }
 
-        /*
-         * Recalculamos el estado de todos los items.
-         */
-        for (const item of order.items) {
-          await this.recalculateOrderItemState(tx, item.id);
-        }
+        // --------------------------------------------------------
+        // GET CREATED JOBS
+        // --------------------------------------------------------
 
-        /*
-         * Finalmente recalculamos el pedido.
-         */
-        await this.recalculateOrderStateOnly(tx, orderId);
+        const createdJobIds = createdJobs.map((job) => job.id);
+
+        const productionJobs = await tx.productionJob.findMany({
+          where: {
+            id: {
+              in: createdJobIds,
+            },
+          },
+
+          select: this.productionListSelect,
+
+          orderBy: {
+            createdAt: 'asc',
+          },
+        });
 
         return {
           orderId,
@@ -1372,5 +1491,12 @@ export class ProductionsService {
         companyName: row.companyName,
       },
     }));
+  }
+
+  private getProductionScopeKey(
+    orderItemId: string,
+    orderItemLogoId: string | null,
+  ) {
+    return `${orderItemId}:${orderItemLogoId ?? 'NO_LOGO'}`;
   }
 }
