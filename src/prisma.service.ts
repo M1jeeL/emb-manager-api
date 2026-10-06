@@ -16,10 +16,12 @@ export class PrismaService
   }
 
   async onModuleInit() {
+    console.log('Iniciando prisma');
     await this.$connect();
   }
 
   async onModuleDestroy() {
+    console.log('Desconectando prisma');
     await this.$disconnect();
   }
 }
