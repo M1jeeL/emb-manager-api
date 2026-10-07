@@ -80,6 +80,17 @@ export class ProductionsController {
     return this.productionService.findAvailableOrders(user.organizationId);
   }
 
+  @Get('orders/:orderId/pending')
+  findPendingProduction(
+    @CurrentUser() user: JwtUser,
+    @Param('orderId') orderId: string,
+  ) {
+    return this.productionService.findPendingProduction(
+      user.organizationId,
+      orderId,
+    );
+  }
+
   // ============================================================
   // FIND ONE
   // ============================================================

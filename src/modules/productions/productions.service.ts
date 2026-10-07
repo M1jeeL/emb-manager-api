@@ -395,7 +395,7 @@ export class ProductionsService {
         }
 
         // --------------------------------------------------------
-        // PREPARE ALL JOBS
+        // PREPARE ALL PENDING JOBS
         // --------------------------------------------------------
 
         const jobsToCreate: Array<{
@@ -410,8 +410,6 @@ export class ProductionsService {
         }> = [];
 
         for (const item of order.items) {
-          this.validateOrderItemForProduction(item.status);
-
           // ------------------------------------------------------
           // ITEM WITH LOGOS
           // ------------------------------------------------------
@@ -427,9 +425,14 @@ export class ProductionsService {
                 0,
               );
 
+              // No queda nada por producir para este logo.
               if (availableQuantity <= 0) {
                 continue;
               }
+
+              // Solo validamos el estado cuando realmente
+              // existe producción pendiente.
+              this.validateOrderItemForProduction(item.status);
 
               jobsToCreate.push({
                 orderId,
@@ -463,9 +466,13 @@ export class ProductionsService {
             0,
           );
 
+          // Item completamente producido.
           if (availableQuantity <= 0) {
             continue;
           }
+
+          // Solo validamos el estado si queda producción pendiente.
+          this.validateOrderItemForProduction(item.status);
 
           jobsToCreate.push({
             orderId,
@@ -508,11 +515,6 @@ export class ProductionsService {
         // --------------------------------------------------------
         // UPDATE ITEM STATES
         // --------------------------------------------------------
-        //
-        // Todos los jobs recién creados quedan PENDING.
-        // Por lo tanto, cualquier item al que le acabamos
-        // de asignar producción pasa a IN_PROGRESS.
-        //
 
         const affectedItemIds = [
           ...new Set(jobsToCreate.map((job) => job.orderItemId)),
@@ -591,6 +593,178 @@ export class ProductionsService {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
       },
     );
+  }
+
+  async findPendingProduction(organizationId: string, orderId: string) {
+    const order = await this.prisma.order.findFirst({
+      where: {
+        id: orderId,
+        organizationId,
+      },
+
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+            taxId: true,
+            companyName: true,
+          },
+        },
+
+        items: {
+          orderBy: {
+            createdAt: 'asc',
+          },
+
+          include: {
+            garment: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                active: true,
+              },
+            },
+
+            logos: {
+              orderBy: {
+                createdAt: 'asc',
+              },
+
+              include: {
+                logo: {
+                  select: {
+                    id: true,
+                    name: true,
+                    status: true,
+                    currentPrice: true,
+                    customerId: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Pedido no encontrado');
+    }
+
+    // --------------------------------------------------------
+    // GET EXISTING PRODUCTION
+    // --------------------------------------------------------
+
+    const existingProduction = await this.prisma.productionJob.findMany({
+      where: {
+        orderId,
+
+        status: {
+          not: ProductionJobStatus.CANCELLED,
+        },
+      },
+
+      select: {
+        orderItemId: true,
+        orderItemLogoId: true,
+        quantity: true,
+      },
+    });
+
+    // --------------------------------------------------------
+    // CALCULATE ALLOCATED QUANTITIES
+    // --------------------------------------------------------
+
+    const allocated = new Map<string, number>();
+
+    for (const job of existingProduction) {
+      const key = this.getProductionScopeKey(
+        job.orderItemId,
+        job.orderItemLogoId,
+      );
+
+      allocated.set(key, (allocated.get(key) ?? 0) + job.quantity);
+    }
+
+    // --------------------------------------------------------
+    // BUILD PENDING ITEMS
+    // --------------------------------------------------------
+
+    const pendingItems: any[] = [];
+
+    for (const item of order.items) {
+      // ------------------------------------------------------
+      // ITEM WITH LOGOS
+      // ------------------------------------------------------
+
+      if (item.logos.length > 0) {
+        const pendingLogos: any[] = [];
+
+        for (const logo of item.logos) {
+          const key = this.getProductionScopeKey(item.id, logo.id);
+
+          const alreadyAllocated = allocated.get(key) ?? 0;
+
+          const pendingQuantity = Math.max(logo.quantity - alreadyAllocated, 0);
+
+          if (pendingQuantity <= 0) {
+            continue;
+          }
+
+          pendingLogos.push({
+            ...logo,
+            pendingQuantity,
+          });
+        }
+
+        // Si ninguno de sus logos tiene producción
+        // pendiente, omitimos completamente el item.
+        if (pendingLogos.length === 0) {
+          continue;
+        }
+
+        pendingItems.push({
+          ...item,
+          logos: pendingLogos,
+        });
+
+        continue;
+      }
+
+      // ------------------------------------------------------
+      // ITEM WITHOUT LOGOS
+      // ------------------------------------------------------
+
+      const key = this.getProductionScopeKey(item.id, null);
+
+      const alreadyAllocated = allocated.get(key) ?? 0;
+
+      const pendingQuantity = Math.max(item.quantity - alreadyAllocated, 0);
+
+      if (pendingQuantity <= 0) {
+        continue;
+      }
+
+      pendingItems.push({
+        ...item,
+        pendingQuantity,
+      });
+    }
+
+    return {
+      id: order.id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      paymentStatus: order.paymentStatus,
+      orderedAt: order.orderedAt,
+      promisedAt: order.promisedAt,
+      customer: order.customer,
+      items: pendingItems,
+    };
   }
 
   // ============================================================
