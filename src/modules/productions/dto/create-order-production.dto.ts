@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID, Max } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateOrderProductionDto {
   @IsOptional()
@@ -11,6 +11,5 @@ export class CreateOrderProductionDto {
 
   @IsOptional()
   @IsString()
-  @Max(2000)
   notes?: string;
 }

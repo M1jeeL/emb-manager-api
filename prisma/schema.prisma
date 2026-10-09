@@ -793,6 +793,8 @@ model Subscription {
   currentPeriodStartsAt DateTime?
   currentPeriodEndsAt   DateTime?
 
+  cancelAtPeriodEnd Boolean @default(false)
+
   canceledAt DateTime?
   endedAt    DateTime?
 
