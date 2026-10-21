@@ -21,6 +21,7 @@ type PreparedOrderItemLogo = {
   logoName: string;
   unitPrice: Prisma.Decimal;
   quantity: number;
+  placement: string | undefined;
   notes: string | undefined;
 };
 @Injectable()
@@ -137,6 +138,22 @@ export class OrdersService {
             lastName: true,
             email: true,
           },
+        },
+      },
+    },
+
+    commercialRevisions: {
+      orderBy: { revision: 'asc' },
+      select: {
+        id: true,
+        revision: true,
+        subtotal: true,
+        discount: true,
+        total: true,
+        reason: true,
+        createdAt: true,
+        changedBy: {
+          select: { id: true, firstName: true, lastName: true },
         },
       },
     },
@@ -261,6 +278,8 @@ export class OrdersService {
             create: preparedItems.map((item) => ({
               garmentId: item.garmentId,
               description: item.description,
+              size: item.size,
+              color: item.color,
               quantity: item.quantity,
               subtotal: item.subtotal,
               notes: item.notes,
@@ -287,7 +306,22 @@ export class OrdersService {
         include: this.orderDetailInclude,
       });
 
-      return order;
+      await tx.orderCommercialRevision.create({
+        data: {
+          orderId: order.id,
+          revision: 1,
+          subtotal,
+          discount,
+          total,
+          reason: dto.status === OrderStatus.QUOTE ? 'Cotización inicial' : 'Términos iniciales del pedido',
+          changedByUserId: userId,
+        },
+      });
+
+      return tx.order.findUniqueOrThrow({
+        where: { id: order.id },
+        include: this.orderDetailInclude,
+      });
     });
   }
 
@@ -409,64 +443,102 @@ export class OrdersService {
   // UPDATE
   // ============================================================
 
-  async update(organizationId: string, id: string, dto: UpdateOrderDto) {
-    const existing = await this.prisma.order.findFirst({
-      where: {
-        id,
-        organizationId,
+  async update(organizationId: string, id: string, userId: string, dto: UpdateOrderDto) {
+    try {
+      return await this.prisma.$transaction(
+      async (tx) => {
+        const existing = await tx.order.findFirst({
+          where: { id, organizationId },
+          select: {
+            id: true,
+            status: true,
+            subtotal: true,
+            discount: true,
+            paidAmount: true,
+          },
+        });
+
+        if (!existing) {
+          throw new NotFoundException('Pedido no encontrado');
+        }
+
+        if (dto.discount !== undefined && existing.status !== OrderStatus.QUOTE) {
+          throw new ConflictException(
+            'El descuento queda bloqueado al aceptar la cotización. Crea una nueva cotización para cambiar los términos comerciales.',
+          );
+        }
+
+        const discount =
+          dto.discount !== undefined
+            ? this.toDecimal(dto.discount)
+            : existing.discount;
+
+        if (discount.lessThan(0)) {
+          throw new BadRequestException('El descuento no puede ser negativo');
+        }
+        if (discount.greaterThan('9999999999.99')) {
+          throw new BadRequestException('El descuento excede el máximo permitido');
+        }
+
+        if (discount.greaterThan(existing.subtotal)) {
+          throw new BadRequestException(
+            'El descuento no puede ser mayor al subtotal',
+          );
+        }
+
+        const total = existing.subtotal.minus(discount);
+        if (total.lessThan(existing.paidAmount)) {
+          throw new ConflictException(
+            'El total no puede quedar por debajo de los pagos registrados.',
+          );
+        }
+
+        if (dto.discount !== undefined && !discount.equals(existing.discount)) {
+          const latestRevision = await tx.orderCommercialRevision.findFirst({
+            where: { orderId: existing.id },
+            orderBy: { revision: 'desc' },
+            select: { revision: true },
+          });
+          await tx.orderCommercialRevision.create({
+            data: {
+              orderId: existing.id,
+              revision: (latestRevision?.revision ?? 0) + 1,
+              subtotal: existing.subtotal,
+              discount,
+              total,
+              reason: 'Ajuste de descuento en cotización',
+              changedByUserId: userId,
+            },
+          });
+        }
+
+        return tx.order.update({
+          where: { id: existing.id },
+          data: {
+            ...(dto.promisedAt !== undefined && {
+              promisedAt: dto.promisedAt ? new Date(dto.promisedAt) : null,
+            }),
+            ...(dto.discount !== undefined && { discount, total }),
+            ...(dto.notes !== undefined && {
+              notes: this.cleanOptionalString(dto.notes),
+            }),
+          },
+          include: this.orderDetailInclude,
+        });
       },
-
-      select: {
-        id: true,
-        subtotal: true,
-        discount: true,
-        total: true,
-      },
-    });
-
-    if (!existing) {
-      throw new NotFoundException('Pedido no encontrado');
-    }
-
-    const discount =
-      dto.discount !== undefined
-        ? this.toDecimal(dto.discount)
-        : existing.discount;
-
-    if (discount.lessThan(0)) {
-      throw new BadRequestException('El descuento no puede ser negativo');
-    }
-
-    if (discount.greaterThan(existing.subtotal)) {
-      throw new BadRequestException(
-        'El descuento no puede ser mayor al subtotal',
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
       );
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2034'
+      ) {
+        throw new ConflictException(
+          'El pedido cambió durante la edición. Actualiza la página e inténtalo nuevamente.',
+        );
+      }
+      throw error;
     }
-
-    const total = existing.subtotal.minus(discount);
-
-    return this.prisma.order.update({
-      where: {
-        id: existing.id,
-      },
-
-      data: {
-        ...(dto.promisedAt !== undefined && {
-          promisedAt: dto.promisedAt ? new Date(dto.promisedAt) : null,
-        }),
-
-        ...(dto.discount !== undefined && {
-          discount,
-          total,
-        }),
-
-        ...(dto.notes !== undefined && {
-          notes: this.cleanOptionalString(dto.notes),
-        }),
-      },
-
-      include: this.orderDetailInclude,
-    });
   }
 
   // ============================================================
@@ -479,7 +551,8 @@ export class OrdersService {
     id: string,
     dto: UpdateOrderStatusDto,
   ) {
-    return this.prisma.$transaction(async (tx) => {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
       const order = await tx.order.findFirst({
         where: {
           id,
@@ -490,6 +563,7 @@ export class OrdersService {
           id: true,
           status: true,
           deliveredAt: true,
+          paidAmount: true,
         },
       });
 
@@ -498,6 +572,15 @@ export class OrdersService {
       }
 
       this.validateStatusTransition(order.status, dto.status);
+
+      if (
+        dto.status === OrderStatus.CANCELLED &&
+        order.paidAmount.greaterThan(0)
+      ) {
+        throw new ConflictException(
+          'No se puede cancelar un pedido con pagos registrados. Registra primero la devolución o regularización del saldo.',
+        );
+      }
 
       const deliveredAt =
         dto.status === OrderStatus.DELIVERED ? new Date() : order.deliveredAt;
@@ -533,7 +616,18 @@ export class OrdersService {
 
         include: this.orderDetailInclude,
       });
-    });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2034'
+      ) {
+        throw new ConflictException(
+          'El pedido cambió durante la operación. Actualiza la página e inténtalo nuevamente.',
+        );
+      }
+      throw error;
+    }
   }
 
   // ============================================================
@@ -660,6 +754,8 @@ export class OrdersService {
     const preparedItems: Array<{
       garmentId: string;
       description: string | undefined;
+      size: string | undefined;
+      color: string | undefined;
       quantity: number;
       subtotal: Prisma.Decimal;
       notes: string | undefined;
@@ -668,6 +764,7 @@ export class OrdersService {
         logoName: string;
         unitPrice: Prisma.Decimal;
         quantity: number;
+        placement: string | undefined;
         notes: string | undefined;
       }>;
     }> = [];
@@ -782,6 +879,7 @@ export class OrdersService {
             logoName: logo.name,
             unitPrice: logo.currentPrice,
             quantity,
+            placement: this.cleanOptionalString(logoDto.placement),
             notes: this.cleanOptionalString(logoDto.notes),
           });
 
@@ -874,6 +972,7 @@ export class OrdersService {
           unitPrice: logo.currentPrice,
 
           quantity,
+          placement: this.cleanOptionalString(logoDto.placement),
 
           notes: this.cleanOptionalString(logoDto.notes),
         });
@@ -895,6 +994,8 @@ export class OrdersService {
       preparedItems.push({
         garmentId: garment.id,
         description: this.cleanOptionalString(item.description),
+        size: this.cleanOptionalString(item.size),
+        color: this.cleanOptionalString(item.color),
         quantity: item.quantity,
         subtotal: itemSubtotal,
         notes: this.cleanOptionalString(item.notes),

@@ -326,6 +326,7 @@ export type OrderWhereInput = {
   payments?: Prisma.PaymentListRelationFilter
   productionJobs?: Prisma.ProductionJobListRelationFilter
   statusHistory?: Prisma.OrderStatusHistoryListRelationFilter
+  commercialRevisions?: Prisma.OrderCommercialRevisionListRelationFilter
 }
 
 export type OrderOrderByWithRelationInput = {
@@ -351,6 +352,7 @@ export type OrderOrderByWithRelationInput = {
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   productionJobs?: Prisma.ProductionJobOrderByRelationAggregateInput
   statusHistory?: Prisma.OrderStatusHistoryOrderByRelationAggregateInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionOrderByRelationAggregateInput
 }
 
 export type OrderWhereUniqueInput = Prisma.AtLeast<{
@@ -380,6 +382,7 @@ export type OrderWhereUniqueInput = Prisma.AtLeast<{
   payments?: Prisma.PaymentListRelationFilter
   productionJobs?: Prisma.ProductionJobListRelationFilter
   statusHistory?: Prisma.OrderStatusHistoryListRelationFilter
+  commercialRevisions?: Prisma.OrderCommercialRevisionListRelationFilter
 }, "id" | "organizationId_orderNumber">
 
 export type OrderOrderByWithAggregationInput = {
@@ -449,6 +452,7 @@ export type OrderCreateInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateInput = {
@@ -472,6 +476,7 @@ export type OrderUncheckedCreateInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUpdateInput = {
@@ -495,6 +500,7 @@ export type OrderUpdateInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateInput = {
@@ -518,6 +524,7 @@ export type OrderUncheckedUpdateInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyInput = {
@@ -816,6 +823,20 @@ export type OrderUpdateOneRequiredWithoutStatusHistoryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutStatusHistoryInput, Prisma.OrderUpdateWithoutStatusHistoryInput>, Prisma.OrderUncheckedUpdateWithoutStatusHistoryInput>
 }
 
+export type OrderCreateNestedOneWithoutCommercialRevisionsInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutCommercialRevisionsInput, Prisma.OrderUncheckedCreateWithoutCommercialRevisionsInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCommercialRevisionsInput
+  connect?: Prisma.OrderWhereUniqueInput
+}
+
+export type OrderUpdateOneRequiredWithoutCommercialRevisionsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderCreateWithoutCommercialRevisionsInput, Prisma.OrderUncheckedCreateWithoutCommercialRevisionsInput>
+  connectOrCreate?: Prisma.OrderCreateOrConnectWithoutCommercialRevisionsInput
+  upsert?: Prisma.OrderUpsertWithoutCommercialRevisionsInput
+  connect?: Prisma.OrderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrderUpdateToOneWithWhereWithoutCommercialRevisionsInput, Prisma.OrderUpdateWithoutCommercialRevisionsInput>, Prisma.OrderUncheckedUpdateWithoutCommercialRevisionsInput>
+}
+
 export type OrderCreateWithoutOrganizationInput = {
   id?: string
   orderNumber: number
@@ -836,6 +857,7 @@ export type OrderCreateWithoutOrganizationInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutOrganizationInput = {
@@ -858,6 +880,7 @@ export type OrderUncheckedCreateWithoutOrganizationInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutOrganizationInput = {
@@ -928,6 +951,7 @@ export type OrderCreateWithoutCustomerInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutCustomerInput = {
@@ -950,6 +974,7 @@ export type OrderUncheckedCreateWithoutCustomerInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutCustomerInput = {
@@ -998,6 +1023,7 @@ export type OrderCreateWithoutItemsInput = {
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutItemsInput = {
@@ -1020,6 +1046,7 @@ export type OrderUncheckedCreateWithoutItemsInput = {
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutItemsInput = {
@@ -1058,6 +1085,7 @@ export type OrderUpdateWithoutItemsInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutItemsInput = {
@@ -1080,6 +1108,7 @@ export type OrderUncheckedUpdateWithoutItemsInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutPaymentsInput = {
@@ -1102,6 +1131,7 @@ export type OrderCreateWithoutPaymentsInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutPaymentsInput = {
@@ -1124,6 +1154,7 @@ export type OrderUncheckedCreateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutPaymentsInput = {
@@ -1162,6 +1193,7 @@ export type OrderUpdateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutPaymentsInput = {
@@ -1184,6 +1216,7 @@ export type OrderUncheckedUpdateWithoutPaymentsInput = {
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutProductionJobsInput = {
@@ -1206,6 +1239,7 @@ export type OrderCreateWithoutProductionJobsInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutProductionJobsInput = {
@@ -1228,6 +1262,7 @@ export type OrderUncheckedCreateWithoutProductionJobsInput = {
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutProductionJobsInput = {
@@ -1266,6 +1301,7 @@ export type OrderUpdateWithoutProductionJobsInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutProductionJobsInput = {
@@ -1288,6 +1324,7 @@ export type OrderUncheckedUpdateWithoutProductionJobsInput = {
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateWithoutStatusHistoryInput = {
@@ -1310,6 +1347,7 @@ export type OrderCreateWithoutStatusHistoryInput = {
   items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutOrderInput
 }
 
 export type OrderUncheckedCreateWithoutStatusHistoryInput = {
@@ -1332,6 +1370,7 @@ export type OrderUncheckedCreateWithoutStatusHistoryInput = {
   items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutOrderInput
 }
 
 export type OrderCreateOrConnectWithoutStatusHistoryInput = {
@@ -1370,6 +1409,7 @@ export type OrderUpdateWithoutStatusHistoryInput = {
   items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutStatusHistoryInput = {
@@ -1392,6 +1432,115 @@ export type OrderUncheckedUpdateWithoutStatusHistoryInput = {
   items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderCreateWithoutCommercialRevisionsInput = {
+  id?: string
+  orderNumber: number
+  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  orderedAt?: Date | string
+  promisedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  subtotal?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  total?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutOrdersInput
+  customer: Prisma.CustomerCreateNestedOneWithoutOrdersInput
+  items?: Prisma.OrderItemCreateNestedManyWithoutOrderInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutOrderInput
+  productionJobs?: Prisma.ProductionJobCreateNestedManyWithoutOrderInput
+  statusHistory?: Prisma.OrderStatusHistoryCreateNestedManyWithoutOrderInput
+}
+
+export type OrderUncheckedCreateWithoutCommercialRevisionsInput = {
+  id?: string
+  organizationId: string
+  customerId: string
+  orderNumber: number
+  status?: $Enums.OrderStatus
+  paymentStatus?: $Enums.PaymentStatus
+  orderedAt?: Date | string
+  promisedAt?: Date | string | null
+  deliveredAt?: Date | string | null
+  subtotal?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  discount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  total?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.OrderItemUncheckedCreateNestedManyWithoutOrderInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutOrderInput
+  productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderInput
+  statusHistory?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutOrderInput
+}
+
+export type OrderCreateOrConnectWithoutCommercialRevisionsInput = {
+  where: Prisma.OrderWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderCreateWithoutCommercialRevisionsInput, Prisma.OrderUncheckedCreateWithoutCommercialRevisionsInput>
+}
+
+export type OrderUpsertWithoutCommercialRevisionsInput = {
+  update: Prisma.XOR<Prisma.OrderUpdateWithoutCommercialRevisionsInput, Prisma.OrderUncheckedUpdateWithoutCommercialRevisionsInput>
+  create: Prisma.XOR<Prisma.OrderCreateWithoutCommercialRevisionsInput, Prisma.OrderUncheckedCreateWithoutCommercialRevisionsInput>
+  where?: Prisma.OrderWhereInput
+}
+
+export type OrderUpdateToOneWithWhereWithoutCommercialRevisionsInput = {
+  where?: Prisma.OrderWhereInput
+  data: Prisma.XOR<Prisma.OrderUpdateWithoutCommercialRevisionsInput, Prisma.OrderUncheckedUpdateWithoutCommercialRevisionsInput>
+}
+
+export type OrderUpdateWithoutCommercialRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  orderedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  promisedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subtotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutOrdersNestedInput
+  customer?: Prisma.CustomerUpdateOneRequiredWithoutOrdersNestedInput
+  items?: Prisma.OrderItemUpdateManyWithoutOrderNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
+  productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
+  statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+}
+
+export type OrderUncheckedUpdateWithoutCommercialRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  orderNumber?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+  paymentStatus?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+  orderedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  promisedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  subtotal?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  discount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.OrderItemUncheckedUpdateManyWithoutOrderNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
+  productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
+  statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderCreateManyOrganizationInput = {
@@ -1432,6 +1581,7 @@ export type OrderUpdateWithoutOrganizationInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutOrganizationInput = {
@@ -1454,6 +1604,7 @@ export type OrderUncheckedUpdateWithoutOrganizationInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1512,6 +1663,7 @@ export type OrderUpdateWithoutCustomerInput = {
   payments?: Prisma.PaymentUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateWithoutCustomerInput = {
@@ -1534,6 +1686,7 @@ export type OrderUncheckedUpdateWithoutCustomerInput = {
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutOrderNestedInput
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderNestedInput
   statusHistory?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutOrderNestedInput
+  commercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutOrderNestedInput
 }
 
 export type OrderUncheckedUpdateManyWithoutCustomerInput = {
@@ -1564,6 +1717,7 @@ export type OrderCountOutputType = {
   payments: number
   productionJobs: number
   statusHistory: number
+  commercialRevisions: number
 }
 
 export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1571,6 +1725,7 @@ export type OrderCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   payments?: boolean | OrderCountOutputTypeCountPaymentsArgs
   productionJobs?: boolean | OrderCountOutputTypeCountProductionJobsArgs
   statusHistory?: boolean | OrderCountOutputTypeCountStatusHistoryArgs
+  commercialRevisions?: boolean | OrderCountOutputTypeCountCommercialRevisionsArgs
 }
 
 /**
@@ -1611,6 +1766,13 @@ export type OrderCountOutputTypeCountStatusHistoryArgs<ExtArgs extends runtime.T
   where?: Prisma.OrderStatusHistoryWhereInput
 }
 
+/**
+ * OrderCountOutputType without action
+ */
+export type OrderCountOutputTypeCountCommercialRevisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderCommercialRevisionWhereInput
+}
+
 
 export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1635,6 +1797,7 @@ export type OrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   productionJobs?: boolean | Prisma.Order$productionJobsArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Order$statusHistoryArgs<ExtArgs>
+  commercialRevisions?: boolean | Prisma.Order$commercialRevisionsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["order"]>
 
@@ -1707,6 +1870,7 @@ export type OrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   payments?: boolean | Prisma.Order$paymentsArgs<ExtArgs>
   productionJobs?: boolean | Prisma.Order$productionJobsArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Order$statusHistoryArgs<ExtArgs>
+  commercialRevisions?: boolean | Prisma.Order$commercialRevisionsArgs<ExtArgs>
   _count?: boolean | Prisma.OrderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1727,6 +1891,7 @@ export type $OrderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     productionJobs: Prisma.$ProductionJobPayload<ExtArgs>[]
     statusHistory: Prisma.$OrderStatusHistoryPayload<ExtArgs>[]
+    commercialRevisions: Prisma.$OrderCommercialRevisionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2145,6 +2310,7 @@ export interface Prisma__OrderClient<T, Null = never, ExtArgs extends runtime.Ty
   payments<T extends Prisma.Order$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   productionJobs<T extends Prisma.Order$productionJobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$productionJobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProductionJobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   statusHistory<T extends Prisma.Order$statusHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  commercialRevisions<T extends Prisma.Order$commercialRevisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order$commercialRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderCommercialRevisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2684,6 +2850,30 @@ export type Order$statusHistoryArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.OrderStatusHistoryScalarFieldEnum | Prisma.OrderStatusHistoryScalarFieldEnum[]
+}
+
+/**
+ * Order.commercialRevisions
+ */
+export type Order$commercialRevisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrderCommercialRevision
+   */
+  select?: Prisma.OrderCommercialRevisionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrderCommercialRevision
+   */
+  omit?: Prisma.OrderCommercialRevisionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderCommercialRevisionInclude<ExtArgs> | null
+  where?: Prisma.OrderCommercialRevisionWhereInput
+  orderBy?: Prisma.OrderCommercialRevisionOrderByWithRelationInput | Prisma.OrderCommercialRevisionOrderByWithRelationInput[]
+  cursor?: Prisma.OrderCommercialRevisionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderCommercialRevisionScalarFieldEnum | Prisma.OrderCommercialRevisionScalarFieldEnum[]
 }
 
 /**

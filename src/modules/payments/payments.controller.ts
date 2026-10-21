@@ -28,6 +28,7 @@ import { UserRole } from '../../generated/prisma/enums.js';
 
 @Controller('payments')
 @UseGuards(JwtAuthGuard, SubscriptionGuard, RolesGuard)
+@Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 

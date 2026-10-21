@@ -3,9 +3,9 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 
 import { PrismaService } from '../../prisma.service.js';
 import { UserRole } from '../../generated/prisma/enums.js';
@@ -16,10 +16,10 @@ import { JwtPayload } from './strategies/jwt.strategy.js';
 
 @Injectable()
 export class AuthService {
+  private readonly refreshLifetimeMs = 30 * 24 * 60 * 60 * 1000;
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -141,7 +141,10 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m',
+    });
+    const refreshToken = await this.createRefreshToken(user.id);
 
     await this.prisma.user.update({
       where: {
@@ -154,8 +157,125 @@ export class AuthService {
 
     return {
       accessToken,
+      refreshToken,
       user: this.sanitizeUser(user),
     };
+  }
+
+  async refresh(rawToken?: string) {
+    if (!rawToken) throw new UnauthorizedException('Sesión vencida');
+    const [id] = rawToken.split('.');
+    if (!id) throw new UnauthorizedException('Sesión inválida');
+
+    const existing = await this.prisma.refreshToken.findUnique({
+      where: { id },
+      include: { user: { include: { organization: { select: { active: true } } } } },
+    });
+
+    if (!existing || existing.tokenHash !== this.hashToken(rawToken)) {
+      throw new UnauthorizedException('Sesión inválida');
+    }
+
+    if (existing.revokedAt) {
+      // Reutilizar una credencial rotada invalida todas las sesiones del usuario.
+      await this.prisma.refreshToken.updateMany({
+        where: { userId: existing.userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      throw new UnauthorizedException('Sesión revocada por seguridad');
+    }
+
+    if (existing.expiresAt <= new Date() || !existing.user.active || !existing.user.organization.active) {
+      await this.prisma.refreshToken.update({
+        where: { id: existing.id },
+        data: { revokedAt: new Date() },
+      });
+      throw new UnauthorizedException('Sesión vencida');
+    }
+
+    const replacement = this.buildRefreshToken(existing.userId);
+    const rotated = await this.prisma.$transaction(async (tx) => {
+      const revoke = await tx.refreshToken.updateMany({
+        where: { id: existing.id, tokenHash: this.hashToken(rawToken), revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      if (revoke.count !== 1) throw new UnauthorizedException('Sesión ya renovada');
+      await tx.refreshToken.create({
+        data: {
+          id: replacement.id,
+          userId: existing.userId,
+          tokenHash: this.hashToken(replacement.value),
+          expiresAt: replacement.expiresAt,
+        },
+      });
+      return true;
+    });
+
+    if (!rotated) throw new UnauthorizedException('Sesión inválida');
+    const accessToken = await this.jwtService.signAsync({
+      sub: existing.user.id,
+      organizationId: existing.user.organizationId,
+      role: existing.user.role,
+    } satisfies JwtPayload, { expiresIn: '15m' });
+
+    return {
+      accessToken,
+      refreshToken: replacement.value,
+      user: this.sanitizeUser(existing.user),
+    };
+  }
+
+  async logout(rawToken?: string) {
+    if (rawToken) {
+      const [id] = rawToken.split('.');
+      if (id) {
+        await this.prisma.refreshToken.updateMany({
+          where: { id, tokenHash: this.hashToken(rawToken), revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+      }
+    }
+    return { message: 'Sesión cerrada' };
+  }
+
+  async revokeOtherSessions(userId: string, currentToken?: string) {
+    const [currentId] = currentToken?.split('.') ?? [];
+    const current = currentId ? await this.prisma.refreshToken.findFirst({
+      where: { id: currentId, userId, tokenHash: this.hashToken(currentToken!) },
+      select: { id: true },
+    }) : null;
+    const result = await this.prisma.refreshToken.updateMany({
+      where: { userId, revokedAt: null, ...(current ? { id: { not: current.id } } : {}) },
+      data: { revokedAt: new Date() },
+    });
+    return { revoked: result.count };
+  }
+
+  private buildRefreshToken(userId: string) {
+    const id = randomUUID();
+    return {
+      id,
+      userId,
+      value: `${id}.${randomBytes(32).toString('base64url')}`,
+      expiresAt: new Date(Date.now() + this.refreshLifetimeMs),
+    };
+  }
+
+  private async createRefreshToken(userId: string) {
+    const token = this.buildRefreshToken(userId);
+    await this.prisma.refreshToken.create({
+      data: {
+        id: token.id,
+        userId,
+        tokenHash: this.hashToken(token.value),
+        expiresAt: token.expiresAt,
+      },
+    });
+    return token.value;
+  }
+
+  private hashToken(token: string) {
+    return createHash('sha256').update(token).digest('hex');
   }
 
   private sanitizeUser(user: {

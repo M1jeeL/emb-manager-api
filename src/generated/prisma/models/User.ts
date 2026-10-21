@@ -235,6 +235,8 @@ export type UserWhereInput = {
   auditLogs?: Prisma.AuditLogListRelationFilter
   orderStatusChanges?: Prisma.OrderStatusHistoryListRelationFilter
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryListRelationFilter
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -254,6 +256,8 @@ export type UserOrderByWithRelationInput = {
   auditLogs?: Prisma.AuditLogOrderByRelationAggregateInput
   orderStatusChanges?: Prisma.OrderStatusHistoryOrderByRelationAggregateInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryOrderByRelationAggregateInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionOrderByRelationAggregateInput
+  refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -276,6 +280,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   auditLogs?: Prisma.AuditLogListRelationFilter
   orderStatusChanges?: Prisma.OrderStatusHistoryListRelationFilter
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryListRelationFilter
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -328,6 +334,8 @@ export type UserCreateInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -346,6 +354,8 @@ export type UserUncheckedCreateInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -364,6 +374,8 @@ export type UserUpdateInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -382,6 +394,8 @@ export type UserUncheckedUpdateInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -433,6 +447,11 @@ export type UserListRelationFilter = {
 
 export type UserOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type UserScalarRelationFilter = {
+  is?: Prisma.UserWhereInput
+  isNot?: Prisma.UserWhereInput
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -524,12 +543,22 @@ export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
-export type EnumUserRoleFieldUpdateOperationsInput = {
-  set?: $Enums.UserRole
+export type UserCreateNestedOneWithoutRefreshTokensInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
+  connect?: Prisma.UserWhereUniqueInput
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
+export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
+  upsert?: Prisma.UserUpsertWithoutRefreshTokensInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
+}
+
+export type EnumUserRoleFieldUpdateOperationsInput = {
+  set?: $Enums.UserRole
 }
 
 export type UserCreateNestedOneWithoutEmployeeInput = {
@@ -562,6 +591,22 @@ export type UserUpdateOneWithoutOrderStatusChangesNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrderStatusChangesInput, Prisma.UserUpdateWithoutOrderStatusChangesInput>, Prisma.UserUncheckedUpdateWithoutOrderStatusChangesInput>
+}
+
+export type UserCreateNestedOneWithoutOrderCommercialRevisionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrderCommercialRevisionsInput, Prisma.UserUncheckedCreateWithoutOrderCommercialRevisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrderCommercialRevisionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutOrderCommercialRevisionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrderCommercialRevisionsInput, Prisma.UserUncheckedCreateWithoutOrderCommercialRevisionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrderCommercialRevisionsInput
+  upsert?: Prisma.UserUpsertWithoutOrderCommercialRevisionsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrderCommercialRevisionsInput, Prisma.UserUpdateWithoutOrderCommercialRevisionsInput>, Prisma.UserUncheckedUpdateWithoutOrderCommercialRevisionsInput>
 }
 
 export type UserCreateNestedOneWithoutOrderItemStatusChangesInput = {
@@ -611,6 +656,8 @@ export type UserCreateWithoutOrganizationInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrganizationInput = {
@@ -628,6 +675,8 @@ export type UserUncheckedCreateWithoutOrganizationInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrganizationInput = {
@@ -673,6 +722,98 @@ export type UserScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
+export type UserCreateWithoutRefreshTokensInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  role?: $Enums.UserRole
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+}
+
+export type UserUncheckedCreateWithoutRefreshTokensInput = {
+  id?: string
+  organizationId: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  role?: $Enums.UserRole
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee?: Prisma.EmployeeUncheckedCreateNestedOneWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+}
+
+export type UserCreateOrConnectWithoutRefreshTokensInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+}
+
+export type UserUpsertWithoutRefreshTokensInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRefreshTokensInput, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRefreshTokensInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRefreshTokensInput, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
+}
+
+export type UserUpdateWithoutRefreshTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRefreshTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUncheckedUpdateOneWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+}
+
 export type UserCreateWithoutEmployeeInput = {
   id?: string
   email: string
@@ -688,6 +829,8 @@ export type UserCreateWithoutEmployeeInput = {
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeInput = {
@@ -705,6 +848,8 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeInput = {
@@ -738,6 +883,8 @@ export type UserUpdateWithoutEmployeeInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeInput = {
@@ -755,6 +902,8 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOrderStatusChangesInput = {
@@ -772,6 +921,8 @@ export type UserCreateWithoutOrderStatusChangesInput = {
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrderStatusChangesInput = {
@@ -789,6 +940,8 @@ export type UserUncheckedCreateWithoutOrderStatusChangesInput = {
   employee?: Prisma.EmployeeUncheckedCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrderStatusChangesInput = {
@@ -822,6 +975,8 @@ export type UserUpdateWithoutOrderStatusChangesInput = {
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrderStatusChangesInput = {
@@ -839,6 +994,100 @@ export type UserUncheckedUpdateWithoutOrderStatusChangesInput = {
   employee?: Prisma.EmployeeUncheckedUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutOrderCommercialRevisionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  role?: $Enums.UserRole
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization: Prisma.OrganizationCreateNestedOneWithoutUsersInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOrderCommercialRevisionsInput = {
+  id?: string
+  organizationId: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  role?: $Enums.UserRole
+  active?: boolean
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employee?: Prisma.EmployeeUncheckedCreateNestedOneWithoutUserInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOrderCommercialRevisionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrderCommercialRevisionsInput, Prisma.UserUncheckedCreateWithoutOrderCommercialRevisionsInput>
+}
+
+export type UserUpsertWithoutOrderCommercialRevisionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOrderCommercialRevisionsInput, Prisma.UserUncheckedUpdateWithoutOrderCommercialRevisionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrderCommercialRevisionsInput, Prisma.UserUncheckedCreateWithoutOrderCommercialRevisionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOrderCommercialRevisionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOrderCommercialRevisionsInput, Prisma.UserUncheckedUpdateWithoutOrderCommercialRevisionsInput>
+}
+
+export type UserUpdateWithoutOrderCommercialRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutUsersNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOrderCommercialRevisionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUncheckedUpdateOneWithoutUserNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutOrderItemStatusChangesInput = {
@@ -856,6 +1105,8 @@ export type UserCreateWithoutOrderItemStatusChangesInput = {
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutOrderItemStatusChangesInput = {
@@ -873,6 +1124,8 @@ export type UserUncheckedCreateWithoutOrderItemStatusChangesInput = {
   employee?: Prisma.EmployeeUncheckedCreateNestedOneWithoutUserInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutOrderItemStatusChangesInput = {
@@ -906,6 +1159,8 @@ export type UserUpdateWithoutOrderItemStatusChangesInput = {
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrderItemStatusChangesInput = {
@@ -923,6 +1178,8 @@ export type UserUncheckedUpdateWithoutOrderItemStatusChangesInput = {
   employee?: Prisma.EmployeeUncheckedUpdateOneWithoutUserNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAuditLogsInput = {
@@ -940,6 +1197,8 @@ export type UserCreateWithoutAuditLogsInput = {
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -957,6 +1216,8 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   employee?: Prisma.EmployeeUncheckedCreateNestedOneWithoutUserInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedCreateNestedManyWithoutChangedByInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedCreateNestedManyWithoutChangedByInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -990,6 +1251,8 @@ export type UserUpdateWithoutAuditLogsInput = {
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -1007,6 +1270,8 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   employee?: Prisma.EmployeeUncheckedUpdateOneWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyOrganizationInput = {
@@ -1037,6 +1302,8 @@ export type UserUpdateWithoutOrganizationInput = {
   auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrganizationInput = {
@@ -1054,6 +1321,8 @@ export type UserUncheckedUpdateWithoutOrganizationInput = {
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
   orderStatusChanges?: Prisma.OrderStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
   orderItemStatusChanges?: Prisma.OrderItemStatusHistoryUncheckedUpdateManyWithoutChangedByNestedInput
+  orderCommercialRevisions?: Prisma.OrderCommercialRevisionUncheckedUpdateManyWithoutChangedByNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1078,12 +1347,16 @@ export type UserCountOutputType = {
   auditLogs: number
   orderStatusChanges: number
   orderItemStatusChanges: number
+  orderCommercialRevisions: number
+  refreshTokens: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
   orderStatusChanges?: boolean | UserCountOutputTypeCountOrderStatusChangesArgs
   orderItemStatusChanges?: boolean | UserCountOutputTypeCountOrderItemStatusChangesArgs
+  orderCommercialRevisions?: boolean | UserCountOutputTypeCountOrderCommercialRevisionsArgs
+  refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
 }
 
 /**
@@ -1117,6 +1390,20 @@ export type UserCountOutputTypeCountOrderItemStatusChangesArgs<ExtArgs extends r
   where?: Prisma.OrderItemStatusHistoryWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOrderCommercialRevisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderCommercialRevisionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RefreshTokenWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1135,6 +1422,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   orderStatusChanges?: boolean | Prisma.User$orderStatusChangesArgs<ExtArgs>
   orderItemStatusChanges?: boolean | Prisma.User$orderItemStatusChangesArgs<ExtArgs>
+  orderCommercialRevisions?: boolean | Prisma.User$orderCommercialRevisionsArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1189,6 +1478,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   auditLogs?: boolean | Prisma.User$auditLogsArgs<ExtArgs>
   orderStatusChanges?: boolean | Prisma.User$orderStatusChangesArgs<ExtArgs>
   orderItemStatusChanges?: boolean | Prisma.User$orderItemStatusChangesArgs<ExtArgs>
+  orderCommercialRevisions?: boolean | Prisma.User$orderCommercialRevisionsArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1206,6 +1497,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     orderStatusChanges: Prisma.$OrderStatusHistoryPayload<ExtArgs>[]
     orderItemStatusChanges: Prisma.$OrderItemStatusHistoryPayload<ExtArgs>[]
+    orderCommercialRevisions: Prisma.$OrderCommercialRevisionPayload<ExtArgs>[]
+    refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1618,6 +1911,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   auditLogs<T extends Prisma.User$auditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orderStatusChanges<T extends Prisma.User$orderStatusChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$orderStatusChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orderItemStatusChanges<T extends Prisma.User$orderItemStatusChangesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$orderItemStatusChangesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderItemStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orderCommercialRevisions<T extends Prisma.User$orderCommercialRevisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$orderCommercialRevisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderCommercialRevisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2147,6 +2442,54 @@ export type User$orderItemStatusChangesArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.OrderItemStatusHistoryScalarFieldEnum | Prisma.OrderItemStatusHistoryScalarFieldEnum[]
+}
+
+/**
+ * User.orderCommercialRevisions
+ */
+export type User$orderCommercialRevisionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrderCommercialRevision
+   */
+  select?: Prisma.OrderCommercialRevisionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrderCommercialRevision
+   */
+  omit?: Prisma.OrderCommercialRevisionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderCommercialRevisionInclude<ExtArgs> | null
+  where?: Prisma.OrderCommercialRevisionWhereInput
+  orderBy?: Prisma.OrderCommercialRevisionOrderByWithRelationInput | Prisma.OrderCommercialRevisionOrderByWithRelationInput[]
+  cursor?: Prisma.OrderCommercialRevisionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderCommercialRevisionScalarFieldEnum | Prisma.OrderCommercialRevisionScalarFieldEnum[]
+}
+
+/**
+ * User.refreshTokens
+ */
+export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RefreshToken
+   */
+  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RefreshToken
+   */
+  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
+  where?: Prisma.RefreshTokenWhereInput
+  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
+  cursor?: Prisma.RefreshTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
 }
 
 /**

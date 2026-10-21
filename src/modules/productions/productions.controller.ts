@@ -70,6 +70,11 @@ export class ProductionsController {
     return this.productionService.findAll(user.organizationId, query);
   }
 
+  @Get('summary')
+  getSummary(@CurrentUser() user: JwtUser) {
+    return this.productionService.getSummary(user.organizationId);
+  }
+
   // ============================================================
   // AVAILABLE ORDERS
   // ============================================================

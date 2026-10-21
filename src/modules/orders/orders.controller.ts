@@ -60,7 +60,7 @@ export class OrdersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateOrderDto,
   ) {
-    return this.ordersService.update(user.organizationId, id, dto);
+    return this.ordersService.update(user.organizationId, id, user.userId, dto);
   }
 
   @Patch(':id/status')

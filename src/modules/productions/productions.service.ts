@@ -72,6 +72,9 @@ export class ProductionsService {
         quantity: true,
         status: true,
         description: true,
+        notes: true,
+        size: true,
+        color: true,
 
         garment: {
           select: {
@@ -88,6 +91,7 @@ export class ProductionsService {
         logoName: true,
         unitPrice: true,
         quantity: true,
+        placement: true,
       },
     },
 
@@ -838,6 +842,26 @@ export class ProductionsService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  async getSummary(organizationId: string) {
+    const grouped = await this.prisma.productionJob.groupBy({
+      by: ['status'],
+      where: { order: { organizationId } },
+      _count: { _all: true },
+      _sum: { quantity: true },
+    });
+
+    return grouped.reduce<Record<string, { jobs: number; units: number }>>(
+      (summary, row) => {
+        summary[row.status] = {
+          jobs: row._count._all,
+          units: row._sum.quantity ?? 0,
+        };
+        return summary;
+      },
+      {},
+    );
   }
 
   // ============================================================

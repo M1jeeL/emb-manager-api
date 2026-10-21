@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsInt,
+  MaxLength,
   IsOptional,
   IsString,
   IsUUID,
@@ -18,7 +19,18 @@ export class CreateOrderItemDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(255)
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  size?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  color?: string;
 
   @IsInt()
   @Min(1)
@@ -32,5 +44,6 @@ export class CreateOrderItemDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   notes?: string;
 }

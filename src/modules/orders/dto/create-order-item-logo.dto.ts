@@ -1,5 +1,6 @@
 import {
   IsInt,
+  MaxLength,
   IsOptional,
   IsString,
   IsUUID,
@@ -31,5 +32,11 @@ export class CreateOrderItemLogoDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100)
+  placement?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
   notes?: string;
 }

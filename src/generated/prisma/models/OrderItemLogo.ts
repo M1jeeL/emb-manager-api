@@ -43,6 +43,7 @@ export type OrderItemLogoMinAggregateOutputType = {
   logoName: string | null
   unitPrice: runtime.Decimal | null
   quantity: number | null
+  placement: string | null
   notes: string | null
   createdAt: Date | null
 }
@@ -54,6 +55,7 @@ export type OrderItemLogoMaxAggregateOutputType = {
   logoName: string | null
   unitPrice: runtime.Decimal | null
   quantity: number | null
+  placement: string | null
   notes: string | null
   createdAt: Date | null
 }
@@ -65,6 +67,7 @@ export type OrderItemLogoCountAggregateOutputType = {
   logoName: number
   unitPrice: number
   quantity: number
+  placement: number
   notes: number
   createdAt: number
   _all: number
@@ -88,6 +91,7 @@ export type OrderItemLogoMinAggregateInputType = {
   logoName?: true
   unitPrice?: true
   quantity?: true
+  placement?: true
   notes?: true
   createdAt?: true
 }
@@ -99,6 +103,7 @@ export type OrderItemLogoMaxAggregateInputType = {
   logoName?: true
   unitPrice?: true
   quantity?: true
+  placement?: true
   notes?: true
   createdAt?: true
 }
@@ -110,6 +115,7 @@ export type OrderItemLogoCountAggregateInputType = {
   logoName?: true
   unitPrice?: true
   quantity?: true
+  placement?: true
   notes?: true
   createdAt?: true
   _all?: true
@@ -208,6 +214,7 @@ export type OrderItemLogoGroupByOutputType = {
   logoName: string
   unitPrice: runtime.Decimal
   quantity: number
+  placement: string | null
   notes: string | null
   createdAt: Date
   _count: OrderItemLogoCountAggregateOutputType | null
@@ -242,6 +249,7 @@ export type OrderItemLogoWhereInput = {
   logoName?: Prisma.StringFilter<"OrderItemLogo"> | string
   unitPrice?: Prisma.DecimalFilter<"OrderItemLogo"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFilter<"OrderItemLogo"> | number
+  placement?: Prisma.StringNullableFilter<"OrderItemLogo"> | string | null
   notes?: Prisma.StringNullableFilter<"OrderItemLogo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OrderItemLogo"> | Date | string
   orderItem?: Prisma.XOR<Prisma.OrderItemScalarRelationFilter, Prisma.OrderItemWhereInput>
@@ -256,6 +264,7 @@ export type OrderItemLogoOrderByWithRelationInput = {
   logoName?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  placement?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   orderItem?: Prisma.OrderItemOrderByWithRelationInput
@@ -273,6 +282,7 @@ export type OrderItemLogoWhereUniqueInput = Prisma.AtLeast<{
   logoName?: Prisma.StringFilter<"OrderItemLogo"> | string
   unitPrice?: Prisma.DecimalFilter<"OrderItemLogo"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFilter<"OrderItemLogo"> | number
+  placement?: Prisma.StringNullableFilter<"OrderItemLogo"> | string | null
   notes?: Prisma.StringNullableFilter<"OrderItemLogo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OrderItemLogo"> | Date | string
   orderItem?: Prisma.XOR<Prisma.OrderItemScalarRelationFilter, Prisma.OrderItemWhereInput>
@@ -287,6 +297,7 @@ export type OrderItemLogoOrderByWithAggregationInput = {
   logoName?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  placement?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OrderItemLogoCountOrderByAggregateInput
@@ -306,6 +317,7 @@ export type OrderItemLogoScalarWhereWithAggregatesInput = {
   logoName?: Prisma.StringWithAggregatesFilter<"OrderItemLogo"> | string
   unitPrice?: Prisma.DecimalWithAggregatesFilter<"OrderItemLogo"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntWithAggregatesFilter<"OrderItemLogo"> | number
+  placement?: Prisma.StringNullableWithAggregatesFilter<"OrderItemLogo"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"OrderItemLogo"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OrderItemLogo"> | Date | string
 }
@@ -315,6 +327,7 @@ export type OrderItemLogoCreateInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   orderItem: Prisma.OrderItemCreateNestedOneWithoutLogosInput
@@ -329,6 +342,7 @@ export type OrderItemLogoUncheckedCreateInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderItemLogoInput
@@ -339,6 +353,7 @@ export type OrderItemLogoUpdateInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItem?: Prisma.OrderItemUpdateOneRequiredWithoutLogosNestedInput
@@ -353,6 +368,7 @@ export type OrderItemLogoUncheckedUpdateInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderItemLogoNestedInput
@@ -365,6 +381,7 @@ export type OrderItemLogoCreateManyInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
 }
@@ -374,6 +391,7 @@ export type OrderItemLogoUpdateManyMutationInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -385,6 +403,7 @@ export type OrderItemLogoUncheckedUpdateManyInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -406,6 +425,7 @@ export type OrderItemLogoCountOrderByAggregateInput = {
   logoName?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -422,6 +442,7 @@ export type OrderItemLogoMaxOrderByAggregateInput = {
   logoName?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -433,6 +454,7 @@ export type OrderItemLogoMinOrderByAggregateInput = {
   logoName?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
+  placement?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -552,6 +574,7 @@ export type OrderItemLogoCreateWithoutLogoInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   orderItem: Prisma.OrderItemCreateNestedOneWithoutLogosInput
@@ -564,6 +587,7 @@ export type OrderItemLogoUncheckedCreateWithoutLogoInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderItemLogoInput
@@ -605,6 +629,7 @@ export type OrderItemLogoScalarWhereInput = {
   logoName?: Prisma.StringFilter<"OrderItemLogo"> | string
   unitPrice?: Prisma.DecimalFilter<"OrderItemLogo"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFilter<"OrderItemLogo"> | number
+  placement?: Prisma.StringNullableFilter<"OrderItemLogo"> | string | null
   notes?: Prisma.StringNullableFilter<"OrderItemLogo"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OrderItemLogo"> | Date | string
 }
@@ -614,6 +639,7 @@ export type OrderItemLogoCreateWithoutOrderItemInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   logo: Prisma.LogoCreateNestedOneWithoutOrderItemLogosInput
@@ -626,6 +652,7 @@ export type OrderItemLogoUncheckedCreateWithoutOrderItemInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   productionJobs?: Prisma.ProductionJobUncheckedCreateNestedManyWithoutOrderItemLogoInput
@@ -662,6 +689,7 @@ export type OrderItemLogoCreateWithoutProductionJobsInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
   orderItem: Prisma.OrderItemCreateNestedOneWithoutLogosInput
@@ -675,6 +703,7 @@ export type OrderItemLogoUncheckedCreateWithoutProductionJobsInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
 }
@@ -700,6 +729,7 @@ export type OrderItemLogoUpdateWithoutProductionJobsInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItem?: Prisma.OrderItemUpdateOneRequiredWithoutLogosNestedInput
@@ -713,6 +743,7 @@ export type OrderItemLogoUncheckedUpdateWithoutProductionJobsInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -723,6 +754,7 @@ export type OrderItemLogoCreateManyLogoInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
 }
@@ -732,6 +764,7 @@ export type OrderItemLogoUpdateWithoutLogoInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItem?: Prisma.OrderItemUpdateOneRequiredWithoutLogosNestedInput
@@ -744,6 +777,7 @@ export type OrderItemLogoUncheckedUpdateWithoutLogoInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderItemLogoNestedInput
@@ -755,6 +789,7 @@ export type OrderItemLogoUncheckedUpdateManyWithoutLogoInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -765,6 +800,7 @@ export type OrderItemLogoCreateManyOrderItemInput = {
   logoName: string
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: number
+  placement?: string | null
   notes?: string | null
   createdAt?: Date | string
 }
@@ -774,6 +810,7 @@ export type OrderItemLogoUpdateWithoutOrderItemInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   logo?: Prisma.LogoUpdateOneRequiredWithoutOrderItemLogosNestedInput
@@ -786,6 +823,7 @@ export type OrderItemLogoUncheckedUpdateWithoutOrderItemInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   productionJobs?: Prisma.ProductionJobUncheckedUpdateManyWithoutOrderItemLogoNestedInput
@@ -797,6 +835,7 @@ export type OrderItemLogoUncheckedUpdateManyWithoutOrderItemInput = {
   logoName?: Prisma.StringFieldUpdateOperationsInput | string
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  placement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -839,6 +878,7 @@ export type OrderItemLogoSelect<ExtArgs extends runtime.Types.Extensions.Interna
   logoName?: boolean
   unitPrice?: boolean
   quantity?: boolean
+  placement?: boolean
   notes?: boolean
   createdAt?: boolean
   orderItem?: boolean | Prisma.OrderItemDefaultArgs<ExtArgs>
@@ -854,6 +894,7 @@ export type OrderItemLogoSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   logoName?: boolean
   unitPrice?: boolean
   quantity?: boolean
+  placement?: boolean
   notes?: boolean
   createdAt?: boolean
   orderItem?: boolean | Prisma.OrderItemDefaultArgs<ExtArgs>
@@ -867,6 +908,7 @@ export type OrderItemLogoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   logoName?: boolean
   unitPrice?: boolean
   quantity?: boolean
+  placement?: boolean
   notes?: boolean
   createdAt?: boolean
   orderItem?: boolean | Prisma.OrderItemDefaultArgs<ExtArgs>
@@ -880,11 +922,12 @@ export type OrderItemLogoSelectScalar = {
   logoName?: boolean
   unitPrice?: boolean
   quantity?: boolean
+  placement?: boolean
   notes?: boolean
   createdAt?: boolean
 }
 
-export type OrderItemLogoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderItemId" | "logoId" | "logoName" | "unitPrice" | "quantity" | "notes" | "createdAt", ExtArgs["result"]["orderItemLogo"]>
+export type OrderItemLogoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderItemId" | "logoId" | "logoName" | "unitPrice" | "quantity" | "placement" | "notes" | "createdAt", ExtArgs["result"]["orderItemLogo"]>
 export type OrderItemLogoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orderItem?: boolean | Prisma.OrderItemDefaultArgs<ExtArgs>
   logo?: boolean | Prisma.LogoDefaultArgs<ExtArgs>
@@ -914,6 +957,7 @@ export type $OrderItemLogoPayload<ExtArgs extends runtime.Types.Extensions.Inter
     logoName: string
     unitPrice: runtime.Decimal
     quantity: number
+    placement: string | null
     notes: string | null
     createdAt: Date
   }, ExtArgs["result"]["orderItemLogo"]>
@@ -1348,6 +1392,7 @@ export interface OrderItemLogoFieldRefs {
   readonly logoName: Prisma.FieldRef<"OrderItemLogo", 'String'>
   readonly unitPrice: Prisma.FieldRef<"OrderItemLogo", 'Decimal'>
   readonly quantity: Prisma.FieldRef<"OrderItemLogo", 'Int'>
+  readonly placement: Prisma.FieldRef<"OrderItemLogo", 'String'>
   readonly notes: Prisma.FieldRef<"OrderItemLogo", 'String'>
   readonly createdAt: Prisma.FieldRef<"OrderItemLogo", 'DateTime'>
 }

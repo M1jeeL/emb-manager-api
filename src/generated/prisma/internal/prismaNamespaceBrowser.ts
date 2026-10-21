@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Organization: 'Organization',
+  RefreshToken: 'RefreshToken',
   User: 'User',
   Employee: 'Employee',
   Machine: 'Machine',
@@ -67,6 +68,7 @@ export const ModelName = {
   Payment: 'Payment',
   ProductionJob: 'ProductionJob',
   OrderStatusHistory: 'OrderStatusHistory',
+  OrderCommercialRevision: 'OrderCommercialRevision',
   OrderItemStatusHistory: 'OrderItemStatusHistory',
   AuditLog: 'AuditLog',
   Plan: 'Plan',
@@ -107,6 +109,18 @@ export const OrganizationScalarFieldEnum = {
 } as const
 
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
+
+
+export const RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {
@@ -278,6 +292,8 @@ export const OrderItemScalarFieldEnum = {
   orderId: 'orderId',
   garmentId: 'garmentId',
   description: 'description',
+  size: 'size',
+  color: 'color',
   quantity: 'quantity',
   subtotal: 'subtotal',
   status: 'status',
@@ -296,6 +312,7 @@ export const OrderItemLogoScalarFieldEnum = {
   logoName: 'logoName',
   unitPrice: 'unitPrice',
   quantity: 'quantity',
+  placement: 'placement',
   notes: 'notes',
   createdAt: 'createdAt'
 } as const
@@ -347,6 +364,21 @@ export const OrderStatusHistoryScalarFieldEnum = {
 } as const
 
 export type OrderStatusHistoryScalarFieldEnum = (typeof OrderStatusHistoryScalarFieldEnum)[keyof typeof OrderStatusHistoryScalarFieldEnum]
+
+
+export const OrderCommercialRevisionScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  revision: 'revision',
+  subtotal: 'subtotal',
+  discount: 'discount',
+  total: 'total',
+  reason: 'reason',
+  changedByUserId: 'changedByUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type OrderCommercialRevisionScalarFieldEnum = (typeof OrderCommercialRevisionScalarFieldEnum)[keyof typeof OrderCommercialRevisionScalarFieldEnum]
 
 
 export const OrderItemStatusHistoryScalarFieldEnum = {
@@ -405,6 +437,7 @@ export const SubscriptionScalarFieldEnum = {
   trialEndsAt: 'trialEndsAt',
   currentPeriodStartsAt: 'currentPeriodStartsAt',
   currentPeriodEndsAt: 'currentPeriodEndsAt',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
   canceledAt: 'canceledAt',
   endedAt: 'endedAt',
   externalCustomerId: 'externalCustomerId',

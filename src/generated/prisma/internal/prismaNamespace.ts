@@ -398,6 +398,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Organization: 'Organization',
+  RefreshToken: 'RefreshToken',
   User: 'User',
   Employee: 'Employee',
   Machine: 'Machine',
@@ -413,6 +414,7 @@ export const ModelName = {
   Payment: 'Payment',
   ProductionJob: 'ProductionJob',
   OrderStatusHistory: 'OrderStatusHistory',
+  OrderCommercialRevision: 'OrderCommercialRevision',
   OrderItemStatusHistory: 'OrderItemStatusHistory',
   AuditLog: 'AuditLog',
   Plan: 'Plan',
@@ -433,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "organization" | "user" | "employee" | "machine" | "customer" | "garment" | "logo" | "logoPriceHistory" | "logoVersion" | "logoFile" | "order" | "orderItem" | "orderItemLogo" | "payment" | "productionJob" | "orderStatusHistory" | "orderItemStatusHistory" | "auditLog" | "plan" | "subscription" | "billingEvent"
+    modelProps: "organization" | "refreshToken" | "user" | "employee" | "machine" | "customer" | "garment" | "logo" | "logoPriceHistory" | "logoVersion" | "logoFile" | "order" | "orderItem" | "orderItemLogo" | "payment" | "productionJob" | "orderStatusHistory" | "orderCommercialRevision" | "orderItemStatusHistory" | "auditLog" | "plan" | "subscription" | "billingEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -508,6 +510,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.OrganizationCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.OrganizationCountAggregateOutputType> | number
+        }
+      }
+    }
+    RefreshToken: {
+      payload: Prisma.$RefreshTokenPayload<ExtArgs>
+      fields: Prisma.RefreshTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RefreshTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RefreshTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.RefreshTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RefreshTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+        }
+        findMany: {
+          args: Prisma.RefreshTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[]
+        }
+        create: {
+          args: Prisma.RefreshTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+        }
+        createMany: {
+          args: Prisma.RefreshTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RefreshTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.RefreshTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+        }
+        update: {
+          args: Prisma.RefreshTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.RefreshTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RefreshTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RefreshTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.RefreshTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.RefreshTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRefreshToken>
+        }
+        groupBy: {
+          args: Prisma.RefreshTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RefreshTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RefreshTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RefreshTokenCountAggregateOutputType> | number
         }
       }
     }
@@ -1621,6 +1697,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OrderCommercialRevision: {
+      payload: Prisma.$OrderCommercialRevisionPayload<ExtArgs>
+      fields: Prisma.OrderCommercialRevisionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrderCommercialRevisionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrderCommercialRevisionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>
+        }
+        findFirst: {
+          args: Prisma.OrderCommercialRevisionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrderCommercialRevisionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>
+        }
+        findMany: {
+          args: Prisma.OrderCommercialRevisionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>[]
+        }
+        create: {
+          args: Prisma.OrderCommercialRevisionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>
+        }
+        createMany: {
+          args: Prisma.OrderCommercialRevisionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrderCommercialRevisionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>[]
+        }
+        delete: {
+          args: Prisma.OrderCommercialRevisionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>
+        }
+        update: {
+          args: Prisma.OrderCommercialRevisionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>
+        }
+        deleteMany: {
+          args: Prisma.OrderCommercialRevisionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrderCommercialRevisionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrderCommercialRevisionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>[]
+        }
+        upsert: {
+          args: Prisma.OrderCommercialRevisionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderCommercialRevisionPayload>
+        }
+        aggregate: {
+          args: Prisma.OrderCommercialRevisionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrderCommercialRevision>
+        }
+        groupBy: {
+          args: Prisma.OrderCommercialRevisionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrderCommercialRevisionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrderCommercialRevisionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrderCommercialRevisionCountAggregateOutputType> | number
+        }
+      }
+    }
     OrderItemStatusHistory: {
       payload: Prisma.$OrderItemStatusHistoryPayload<ExtArgs>
       fields: Prisma.OrderItemStatusHistoryFieldRefs
@@ -2049,6 +2199,18 @@ export const OrganizationScalarFieldEnum = {
 export type OrganizationScalarFieldEnum = (typeof OrganizationScalarFieldEnum)[keyof typeof OrganizationScalarFieldEnum]
 
 
+export const RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   organizationId: 'organizationId',
@@ -2218,6 +2380,8 @@ export const OrderItemScalarFieldEnum = {
   orderId: 'orderId',
   garmentId: 'garmentId',
   description: 'description',
+  size: 'size',
+  color: 'color',
   quantity: 'quantity',
   subtotal: 'subtotal',
   status: 'status',
@@ -2236,6 +2400,7 @@ export const OrderItemLogoScalarFieldEnum = {
   logoName: 'logoName',
   unitPrice: 'unitPrice',
   quantity: 'quantity',
+  placement: 'placement',
   notes: 'notes',
   createdAt: 'createdAt'
 } as const
@@ -2287,6 +2452,21 @@ export const OrderStatusHistoryScalarFieldEnum = {
 } as const
 
 export type OrderStatusHistoryScalarFieldEnum = (typeof OrderStatusHistoryScalarFieldEnum)[keyof typeof OrderStatusHistoryScalarFieldEnum]
+
+
+export const OrderCommercialRevisionScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  revision: 'revision',
+  subtotal: 'subtotal',
+  discount: 'discount',
+  total: 'total',
+  reason: 'reason',
+  changedByUserId: 'changedByUserId',
+  createdAt: 'createdAt'
+} as const
+
+export type OrderCommercialRevisionScalarFieldEnum = (typeof OrderCommercialRevisionScalarFieldEnum)[keyof typeof OrderCommercialRevisionScalarFieldEnum]
 
 
 export const OrderItemStatusHistoryScalarFieldEnum = {
@@ -2345,6 +2525,7 @@ export const SubscriptionScalarFieldEnum = {
   trialEndsAt: 'trialEndsAt',
   currentPeriodStartsAt: 'currentPeriodStartsAt',
   currentPeriodEndsAt: 'currentPeriodEndsAt',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
   canceledAt: 'canceledAt',
   endedAt: 'endedAt',
   externalCustomerId: 'externalCustomerId',
@@ -2883,6 +3064,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   organization?: Prisma.OrganizationOmit
+  refreshToken?: Prisma.RefreshTokenOmit
   user?: Prisma.UserOmit
   employee?: Prisma.EmployeeOmit
   machine?: Prisma.MachineOmit
@@ -2898,6 +3080,7 @@ export type GlobalOmitConfig = {
   payment?: Prisma.PaymentOmit
   productionJob?: Prisma.ProductionJobOmit
   orderStatusHistory?: Prisma.OrderStatusHistoryOmit
+  orderCommercialRevision?: Prisma.OrderCommercialRevisionOmit
   orderItemStatusHistory?: Prisma.OrderItemStatusHistoryOmit
   auditLog?: Prisma.AuditLogOmit
   plan?: Prisma.PlanOmit

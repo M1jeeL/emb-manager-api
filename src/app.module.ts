@@ -14,6 +14,7 @@ import { MachinesModule } from './modules/machines/machines.module';
 import { ProductionsModule } from './modules/productions/productions.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { OrganizationModule } from './modules/organization/organization.module.js';
 
 @Global()
 @Module({
@@ -32,6 +33,7 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     ProductionsModule,
     PaymentsModule,
     DashboardModule,
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

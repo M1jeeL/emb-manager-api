@@ -45,6 +45,11 @@ export { Prisma }
  */
 export type Organization = Prisma.OrganizationModel
 /**
+ * Model RefreshToken
+ * 
+ */
+export type RefreshToken = Prisma.RefreshTokenModel
+/**
  * Model User
  * 
  */
@@ -119,6 +124,11 @@ export type ProductionJob = Prisma.ProductionJobModel
  * 
  */
 export type OrderStatusHistory = Prisma.OrderStatusHistoryModel
+/**
+ * Model OrderCommercialRevision
+ * 
+ */
+export type OrderCommercialRevision = Prisma.OrderCommercialRevisionModel
 /**
  * Model OrderItemStatusHistory
  * 

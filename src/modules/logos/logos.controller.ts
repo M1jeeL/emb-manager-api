@@ -162,6 +162,7 @@ export class LogosController {
   }
 
   @Patch(':id/versions/:versionId')
+  @Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
   updateVersion(
     @CurrentUser() user: JwtUser,
     @Param('id') logoId: string,

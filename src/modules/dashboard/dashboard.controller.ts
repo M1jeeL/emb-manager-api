@@ -10,9 +10,12 @@ import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { CurrentUser } from '../../common/decorators/current-user.decorators.js';
 
 import type { JwtUser } from '../../common/interfaces/jwt-user.interface.js';
+import { Roles } from '../../common/decorators/roles.decorators.js';
+import { UserRole } from '../../generated/prisma/enums.js';
 
 @Controller('dashboard')
 @UseGuards(JwtAuthGuard, SubscriptionGuard, RolesGuard)
+@Roles(UserRole.OWNER, UserRole.ADMIN, UserRole.MANAGER)
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
